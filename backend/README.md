@@ -15,7 +15,7 @@ Install the modules
 npm i
 ```
  
-```
+
 Run the development server:
 
 ```
