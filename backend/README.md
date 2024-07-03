@@ -1,5 +1,8 @@
 # BACKEND Brainflow
-
+Clone this repo with this
+```
+git clone https://github.com/taketwotech/brainflow.git
+```
 
 ## Getting Started
 
