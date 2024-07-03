@@ -14,7 +14,6 @@ Install the modules
 ```
 npm i
 ```
- 
 
 Run the development server:
 
@@ -28,6 +27,9 @@ MONGODB_URI=mongodb://localhost:27017/<database>
 JWT_SECRET=<jwt-secret>
 ```
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+
+INSTALL MONGODB at your end.
 
 You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
  
