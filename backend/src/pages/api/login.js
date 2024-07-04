@@ -16,7 +16,7 @@ export default async (req, res) => {
 
   try {
     const client = await clientPromise;
-    const db = client.db('API');    //handler tries to find a user document with given email
+    const db = client.db('');    //handler tries to find a user document with given email
     const user = await db.collection('users').findOne({ email });
 
     if (!user) {
