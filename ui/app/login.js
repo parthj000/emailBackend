@@ -31,7 +31,7 @@ export default function Login() {
   const [password, setPassword] = useState("");
 
   useEffect(() => {
-    fetchToken();
+    // fetchToken();
   }, []);
 
   return (
@@ -43,8 +43,6 @@ export default function Login() {
           style={{
             fontSize: 35,
             fontWeight: "bold",
-            // width: "100%",
-            // color: "blue",
 
             marginBottom: 16,
           }}

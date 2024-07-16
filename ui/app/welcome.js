@@ -12,6 +12,7 @@ import {
   ActivityIndicator,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Buffer } from "buffer";
 
 export default function WelcomePage() {
   const route = useRouter();
@@ -29,8 +30,9 @@ export default function WelcomePage() {
       setLoading(true);
 
       const token = await AsyncStorage.getItem("token");
-      setToken(token);
+
       if (token) {
+        setToken(token);
         const res = await fetch(
           `${process.env.BACKEND_URI}/api/goals?token=${token}`
         );
@@ -44,14 +46,18 @@ export default function WelcomePage() {
             setLoading(false);
             return;
           }
-          const encoded = token.split(".")[1];
-          const decodedData = atob(encoded);
-          console.log(decodedData);
+          console.log(token);
+          const decodedData = Buffer.from(
+            token.split(".")[1],
+            "base64"
+          ).toString("utf-8");
+
           setGoal("set your goal !");
           setName(JSON.parse(decodedData).email);
           setLoading(false);
           return;
         }
+        console.log(res, data);
         await AsyncStorage.removeItem("token");
         console.log(data);
         throw new Error("something went wrong");
