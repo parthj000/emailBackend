@@ -151,6 +151,7 @@ export default function WelcomePage() {
           <View style={{ position: "relative", zIndex: 78, width: "100%" }}>
             <Toast />
           </View>
+
           <ImageBackground
             style={styles.bgimage}
             source={require("../assets/welcome-bg.png")}
@@ -273,24 +274,27 @@ const styles = StyleSheet.create({
 
   Welcome: {
     fontWeight: "bold",
-    marginTop: "15%",
+    marginTop: "7%",
     fontSize: 40,
     color: "white",
   },
   username: {
     color: "white",
-    fontSize: 25,
-    fontWeight: "00",
+    fontSize: 27,
+    fontWeight: "200",
   },
 
   usernameGoal: {
     marginTop: 35,
     width: "83%",
     backgroundColor: "white",
-    textAlign: "left",
+    color: "blue",
+    fontWeight: "bold",
+    textAlign: "center",
     height: 35,
     padding: 5,
     borderRadius: 25,
+    elevation: 8,
   },
 
   Goal: {
