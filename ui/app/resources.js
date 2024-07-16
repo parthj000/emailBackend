@@ -1,13 +1,15 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
 import Header from "./TopHeader";
-
+import UpcomingPage from "./demo"
 const resources = () => {
   return (
-    <View>
+    <>
+    
       <Header title="Resources" />
-      <Text style={{ alignContent: "center" }}> Resources </Text>
-    </View>
+      <UpcomingPage/>
+      
+    </>
   );
 };
 

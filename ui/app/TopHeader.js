@@ -17,9 +17,11 @@ const Header = ({ title }) => {
 
   return (
     <SafeAreaView style={{ backgroundColor: "0379e6" }}>
-      <StatusBar barStyle="light-content" backgroundColor="#0379e6" />
+      
       <View style={styles.headerContainer}>
+      
         <TouchableOpacity onPress={() => navigation.goBack(WelcomePage)}>
+        <StatusBar barStyle="light-content" backgroundColor="#0379e6" />
           <Icon name="arrow-back" size={24} color="#fff" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>{title}</Text>
