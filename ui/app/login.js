@@ -31,7 +31,7 @@ export default function Login() {
   const [password, setPassword] = useState("");
 
   useEffect(() => {
-    // fetchToken();
+    fetchToken();
   }, []);
 
   return (
