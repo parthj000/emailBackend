@@ -1,5 +1,5 @@
-import { Link, useRouter } from "expo-router";
-import React, { useState } from "react";
+import { Link, router, useRouter } from "expo-router";
+import React, { useContext, useEffect, useState } from "react";
 import {
   View,
   TextInput,
@@ -10,10 +10,29 @@ import {
 } from "react-native";
 import LoginButton from "../components/LoginButton";
 import Toast from "react-native-toast-message";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { MyContext } from "../components/AppContext";
+
+const fetchToken = async () => {
+  try {
+    const token = await AsyncStorage.getItem("token");
+    if (token) {
+      router.push("/welcome");
+      return;
+    }
+  } catch (error) {
+    console.log(error);
+    return;
+  }
+};
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
+  useEffect(() => {
+    fetchToken();
+  }, []);
 
   return (
     <>

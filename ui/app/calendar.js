@@ -7,18 +7,23 @@ import EventModal from "../components/EventModal";
 import DayView from "../components/DayView";
 import WeekView from "../components/WeekView";
 import MonthView from "../components/MonthView";
+import Header1 from "./TopHeader";
+
 const MyCalendar = () => {
   return (
-    <CalendarProvider>
-      <View style={styles.container}>
-        <Header />
-        <DayView />
-        <WeekView />
-        <MonthView />
-        <Footer />
-        <EventModal />
-      </View>
-    </CalendarProvider>
+    <>
+      <CalendarProvider>
+        <View style={styles.container}>
+          <Header1 title="Calendar" />
+          <Header />
+          <DayView />
+          <WeekView />
+          <MonthView />
+          <Footer />
+          <EventModal />
+        </View>
+      </CalendarProvider>
+    </>
   );
 };
 

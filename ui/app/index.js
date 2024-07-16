@@ -4,9 +4,15 @@ import WelcomePage from "./welcome";
 import Login from "./login";
 import MyCalendar from "./calendar";
 import TaskComponent from "../components/TaskComponent";
-
+import { MyContext, MyContextProvider } from "../components/AppContext";
 const App = () => {
-  return <Login />;
+  return (
+    <>
+      <MyContextProvider>
+        <Login />
+      </MyContextProvider>
+    </>
+  );
 };
 
 export default App;

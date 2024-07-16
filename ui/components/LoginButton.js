@@ -8,47 +8,45 @@ import {
 import React, { useState } from "react";
 import Toast from "react-native-toast-message";
 import { router } from "expo-router";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
-async function logIn(email, password, setLoading) {
-  setLoading(true);
-  await fetch(`${process.env.BACKEND_URI}/api/login`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      password: password,
-      email: email,
-    }),
-  })
-    .then((res) => {
-      if (res.status === 200) {
-        router.push({
-          pathname: "/welcome",
-        });
-      } else if (res.status == 400 || res.status == 401 || res.status == 400) {
-        return res.json();
-      }
-
-      throw new Error("Oops, Something went wrong !");
-    })
-    .then((data) => {
+async function logIn2(email, password, setLoading) {
+  try {
+    setLoading(true);
+    const res = await fetch(`${process.env.BACKEND_URI}/api/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        password: password,
+        email: email,
+      }),
+    });
+    const data = await res.json();
+    console.log(data);
+    if (res.ok) {
+      console.log(data.token);
+      await AsyncStorage.setItem("token", data.token);
+      setLoading(false);
+      router.push("/welcome");
+      return;
+    } else {
       Toast.show({
         type: "success",
         text1: data.message,
       });
       setLoading(false);
-
-      console.log(data);
-    })
-    .catch((error) => {
-      Toast.show({
-        type: "error",
-        text1: "Error",
-        text2: error.message,
-      });
-      setLoading(false);
+      return;
+    }
+  } catch (error) {
+    Toast.show({
+      type: "success",
+      text1: error.message,
     });
+    setLoading(false);
+    console.log(error);
+  }
 }
 
 const LoginButton = ({ email, password }) => {
@@ -63,7 +61,7 @@ const LoginButton = ({ email, password }) => {
           style={styles.signUpButton}
           onPress={async () => {
             try {
-              await logIn(email, password, setLoading);
+              await logIn2(email, password, setLoading);
             } catch (err) {
               console.log(err);
             }
