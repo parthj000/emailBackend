@@ -274,7 +274,7 @@ const styles = StyleSheet.create({
 
   Welcome: {
     fontWeight: "bold",
-    marginTop: "7%",
+    marginTop: "12%",
     fontSize: 40,
     color: "white",
   },
