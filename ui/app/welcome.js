@@ -13,6 +13,7 @@ import {
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Buffer } from "buffer";
+import Toast from "react-native-toast-message";
 
 export default function WelcomePage() {
   const route = useRouter();
@@ -22,7 +23,7 @@ export default function WelcomePage() {
   const [Token, setToken] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
   const [newGoal, setNewGoal] = useState("");
-  const [success, setSuccess] = useState("");
+  const [success, setSuccess] = useState(false);
   const [goalLoading, setGoalLoading] = useState("");
 
   const fetchGoal = async () => {
@@ -63,8 +64,20 @@ export default function WelcomePage() {
         throw new Error("something went wrong");
       }
     } catch (error) {
+      if (error.message === "Network request failed") {
+        console.log(error);
+        setGoal("!Network error!");
+        setLoading(false);
+        return;
+      }
       console.log(error);
+
       router.push("/login");
+      Toast.show({
+        type: "error",
+        text1: "Oops,something went wrong",
+        position: "top",
+      });
     }
   };
 
@@ -85,11 +98,17 @@ export default function WelcomePage() {
 
       const data = await res.json();
       console.log(data, "data of our goal handling");
+
       if (res.status === 201 || res.status === 200) {
-        setSuccess(true);
         setGoal(newGoal);
         setModalVisible(false);
         setGoalLoading(false);
+        Toast.show({
+          type: "success",
+          text1: "Goal has been set",
+          position: "top",
+        });
+        setSuccess(true);
         return;
       } else {
         setGoalLoading(false);
@@ -100,6 +119,11 @@ export default function WelcomePage() {
       console.log("error on handleSetGoal", error);
       setGoalLoading(false);
       setModalVisible(false);
+      Toast.show({
+        type: "error",
+        text1: "Cant set the goal, Retry !",
+        position: "top",
+      });
       return setSuccess(false);
     }
   };
@@ -124,6 +148,9 @@ export default function WelcomePage() {
         </View>
       ) : (
         <View style={{ backgroundColor: "#ECECEC" }}>
+          <View style={{ position: "relative", zIndex: 78, width: "100%" }}>
+            <Toast />
+          </View>
           <ImageBackground
             style={styles.bgimage}
             source={require("../assets/welcome-bg.png")}
@@ -139,11 +166,7 @@ export default function WelcomePage() {
                 setModalVisible(true);
               }}
             >
-              <TextInput
-                maxLength={25}
-                style={styles.usernameGoal}
-                editable={false}
-              >
+              <TextInput style={styles.usernameGoal} editable={false}>
                 {goal}
               </TextInput>
             </TouchableOpacity>
@@ -199,7 +222,12 @@ export default function WelcomePage() {
 
       <Modal
         visible={modalVisible}
-        onDismiss={() => setModalVisible(false)}
+        onDismiss={() => {
+          setSuccess(false);
+          setModalVisible(false);
+
+          return;
+        }}
         contentContainerStyle={styles.modalView}
       >
         {goalLoading ? (
