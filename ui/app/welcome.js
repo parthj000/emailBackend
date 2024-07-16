@@ -341,11 +341,13 @@ const styles = StyleSheet.create({
   modalView: {
     backgroundColor: "white",
     padding: 20,
-    margin: 20,
+    margin: 45,
+    width: "80%",
     borderRadius: 10,
     alignItems: "center",
     justifyContent: "center",
-    aspectRatio: "9/16",
+    alignSelf: "center",
+    aspectRatio: "1/1",
   },
   modalText: {
     marginBottom: 15,
