@@ -32,7 +32,20 @@ export default function SignUpPage() {
     <>
       <Toast />
       <View style={styles.container}>
-        <Image source={require("../assets/up.jpg")} style={styles.image} />
+        {/* <Image source={require("../assets/up.jpg")} style={styles.image} /> */}
+
+        <Text
+          style={{
+            fontSize: 35,
+            fontWeight: "bold",
+            // width: "100%",
+            // color: "blue",
+
+            marginBottom: 16,
+          }}
+        >
+          SignUp
+        </Text>
 
         {/* username TextInput */}
 

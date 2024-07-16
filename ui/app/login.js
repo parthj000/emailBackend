@@ -11,7 +11,7 @@ import {
 import LoginButton from "../components/LoginButton";
 import Toast from "react-native-toast-message";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { MyContext } from "../components/AppContext";
+// import { MyContext } from "../components/AppContext";
 
 const fetchToken = async () => {
   try {
@@ -31,14 +31,26 @@ export default function Login() {
   const [password, setPassword] = useState("");
 
   useEffect(() => {
-    fetchToken();
+    // fetchToken();
   }, []);
 
   return (
     <>
       <Toast />
       <View style={styles.container}>
-        <Image source={require("../assets/in.jpg")} style={styles.image} />
+        {/* <Image source={require("../assets/in.jpg")} style={styles.image} /> */}
+        <Text
+          style={{
+            fontSize: 35,
+            fontWeight: "bold",
+            // width: "100%",
+            // color: "blue",
+
+            marginBottom: 16,
+          }}
+        >
+          Login
+        </Text>
         <TextInput
           style={styles.input}
           placeholder="Username or email"
