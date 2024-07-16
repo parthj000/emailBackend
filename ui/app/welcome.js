@@ -18,30 +18,80 @@ export default function WelcomePage() {
   const [goal, setGoal] = useState(null);
   const [name, setName] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [modalvisible, setModalVisible] = useState(false);
+  const [Token, setToken] = useState(null);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [newGoal, setNewGoal] = useState("");
+  const [success, setSuccess] = useState("");
+  const [goalLoading, setGoalLoading] = useState("");
+
   const fetchGoal = async () => {
     try {
       setLoading(true);
 
       const token = await AsyncStorage.getItem("token");
+      setToken(token);
       if (token) {
         const res = await fetch(
           `${process.env.BACKEND_URI}/api/goals?token=${token}`
         );
         const data = await res.json();
 
-        if (!res.ok) {
-          await AsyncStorage.removeItem("token");
-          throw new Error("something went wrong");
+        if (res.ok) {
+          if (data.goals[0]) {
+            console.log(data.goals);
+            setGoal(data.goals[0].goalText);
+            setName(data.goals[0].username);
+            setLoading(false);
+            return;
+          }
+          const encoded = token.split(".")[1];
+          const decodedData = atob(encoded);
+          console.log(decodedData);
+          setGoal("set your goal !");
+          setName(JSON.parse(decodedData).email);
+          setLoading(false);
+          return;
         }
-        setGoal(data.goals[0].goalText);
-        setName(data.goals[0].username);
+        await AsyncStorage.removeItem("token");
         console.log(data);
-        setLoading(false);
+        throw new Error("something went wrong");
       }
     } catch (error) {
       console.log(error);
       router.push("/login");
+    }
+  };
+
+  const handleSetGoal = async () => {
+    try {
+      setGoalLoading(true);
+      console.log(Token);
+      let res = await fetch(`${process.env.BACKEND_URI}/api/goals`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          token: Token,
+          goalText: newGoal,
+        }),
+      });
+
+      const data = await res.json();
+      console.log(data, "data of our goal handling");
+      if (res.status === 201 || res.status === 200) {
+        setSuccess(true);
+        setGoal(newGoal);
+        setGoalLoading(false);
+        return;
+      } else {
+        setGoalLoading(true);
+        return setSuccess(false);
+      }
+    } catch (error) {
+      console.log("error on handleSetGoal", error);
+      setGoalLoading(true);
+      return setSuccess(false);
     }
   };
 
@@ -77,16 +127,15 @@ export default function WelcomePage() {
             <Text style={styles.username}>{name} !</Text>
             <TouchableOpacity
               onPress={() => {
-                setModalVisible(!modalvisible);
+                setModalVisible(true);
               }}
             >
               <TextInput
                 maxLength={25}
                 style={styles.usernameGoal}
                 editable={false}
-                placeholder="set a goal for today"
               >
-                {goal ? goal : "set up a goal"}
+                {goal}
               </TextInput>
             </TouchableOpacity>
           </View>
@@ -136,84 +185,39 @@ export default function WelcomePage() {
               <Text>Progress</Text>
             </TouchableOpacity>
           </View>
-          {/* <ModalContainer
-            setModalVisible={setModalVisible}
-            modalvisible={modalvisible}
-          /> */}
         </View>
       )}
-    </>
-  );
-}
 
-const ModalContainer = ({ modalvisible, setModalVisible }) => {
-  return (
-    <>
       <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalvisible}
-        onRequestClose={() => setModalVisible(false)}
+        visible={modalVisible}
+        onDismiss={() => setModalVisible(false)}
+        contentContainerStyle={styles.modalView}
       >
-        <View>
-          <Text>helloeckmdmckdmc</Text>
-          <Button>cndjcn</Button>
-        </View>
+        {goalLoading ? (
+          <ActivityIndicator size="large" />
+        ) : (
+          <>
+            <Text style={styles.modalText}>Set a Goal</Text>
+
+            <TextInput
+              style={styles.input}
+              placeholder="Enter your goal"
+              value={newGoal}
+              onChangeText={setNewGoal}
+            />
+            <Button
+              onPress={() => {
+                handleSetGoal();
+              }}
+            >
+              Set Goal
+            </Button>
+          </>
+        )}
       </Modal>
     </>
   );
-};
-
-const styles3 = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  touchableOpacity: {
-    backgroundColor: "#DDDDDD",
-    padding: 10,
-    borderRadius: 10,
-  },
-  text: {
-    fontSize: 8,
-    color: "#000",
-  },
-  modalContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "rgba(0,0,0,0.5)",
-  },
-  modalView: {
-    width: "80%",
-    backgroundColor: "white",
-    borderRadius: 20,
-    padding: 35,
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  modalText: {
-    marginBottom: 15,
-    textAlign: "center",
-    fontSize: 18,
-    fontWeight: "bold",
-  },
-  input: {
-    width: "100%",
-    height: 40,
-    borderColor: "#CCCCCC",
-    borderWidth: 1,
-    marginBottom: 20,
-    paddingLeft: 10,
-    borderRadius: 10,
-  },
-});
+}
 
 const styles = StyleSheet.create({
   bgimage: {
@@ -332,5 +336,29 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     alignItems: "center",
     justifyContent: "center",
+  },
+
+  modalView: {
+    backgroundColor: "white",
+    padding: 20,
+    margin: 20,
+    borderRadius: 10,
+    alignItems: "center",
+    justifyContent: "center",
+    aspectRatio: "9/16",
+  },
+  modalText: {
+    marginBottom: 15,
+    fontSize: 25,
+    fontWeight: "bold",
+  },
+  input: {
+    width: "100%",
+    height: 40,
+    borderColor: "#CCCCCC",
+    borderWidth: 1,
+    marginBottom: 20,
+    paddingLeft: 10,
+    borderRadius: 10,
   },
 });
