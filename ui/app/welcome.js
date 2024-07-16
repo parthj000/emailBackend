@@ -1,5 +1,6 @@
 import { Link, router, useRouter, useRouteParams } from "expo-router";
 import React, { useContext, useEffect, useState } from "react";
+import { Modal, Button } from "react-native-paper";
 import {
   View,
   TextInput,
@@ -16,7 +17,8 @@ export default function WelcomePage() {
   const route = useRouter();
   const [goal, setGoal] = useState(null);
   const [name, setName] = useState(null);
-  const [loading, setLoading] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [modalvisible, setModalVisible] = useState(false);
   const fetchGoal = async () => {
     try {
       setLoading(true);
@@ -73,14 +75,20 @@ export default function WelcomePage() {
               <Text style={{ color: "black", fontWeight: "bold" }}>Back,</Text>
             </Text>
             <Text style={styles.username}>{name} !</Text>
-            <TextInput
-              maxLength={25}
-              style={styles.usernameGoal}
-              editable={false}
-              placeholder="set a goal for today"
+            <TouchableOpacity
+              onPress={() => {
+                setModalVisible(!modalvisible);
+              }}
             >
-              {goal ? goal : "set up a goal"}
-            </TextInput>
+              <TextInput
+                maxLength={25}
+                style={styles.usernameGoal}
+                editable={false}
+                placeholder="set a goal for today"
+              >
+                {goal ? goal : "set up a goal"}
+              </TextInput>
+            </TouchableOpacity>
           </View>
 
           <View style={styles.second}>
@@ -128,11 +136,84 @@ export default function WelcomePage() {
               <Text>Progress</Text>
             </TouchableOpacity>
           </View>
+          {/* <ModalContainer
+            setModalVisible={setModalVisible}
+            modalvisible={modalvisible}
+          /> */}
         </View>
       )}
     </>
   );
 }
+
+const ModalContainer = ({ modalvisible, setModalVisible }) => {
+  return (
+    <>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalvisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View>
+          <Text>helloeckmdmckdmc</Text>
+          <Button>cndjcn</Button>
+        </View>
+      </Modal>
+    </>
+  );
+};
+
+const styles3 = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  touchableOpacity: {
+    backgroundColor: "#DDDDDD",
+    padding: 10,
+    borderRadius: 10,
+  },
+  text: {
+    fontSize: 8,
+    color: "#000",
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0,0,0,0.5)",
+  },
+  modalView: {
+    width: "80%",
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: "center",
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+  input: {
+    width: "100%",
+    height: 40,
+    borderColor: "#CCCCCC",
+    borderWidth: 1,
+    marginBottom: 20,
+    paddingLeft: 10,
+    borderRadius: 10,
+  },
+});
 
 const styles = StyleSheet.create({
   bgimage: {
@@ -165,7 +246,7 @@ const styles = StyleSheet.create({
     marginTop: 35,
     width: "83%",
     backgroundColor: "white",
-    textAlign: "center",
+    textAlign: "left",
     height: 35,
     padding: 5,
     borderRadius: 25,
