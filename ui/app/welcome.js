@@ -82,15 +82,18 @@ export default function WelcomePage() {
       if (res.status === 201 || res.status === 200) {
         setSuccess(true);
         setGoal(newGoal);
+        setModalVisible(false);
         setGoalLoading(false);
         return;
       } else {
-        setGoalLoading(true);
+        setGoalLoading(false);
+        setModalVisible(false);
         return setSuccess(false);
       }
     } catch (error) {
       console.log("error on handleSetGoal", error);
-      setGoalLoading(true);
+      setGoalLoading(false);
+      setModalVisible(false);
       return setSuccess(false);
     }
   };
