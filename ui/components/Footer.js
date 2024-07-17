@@ -24,6 +24,7 @@ const styles = StyleSheet.create({
   footer: {
     flexDirection: "row",
     justifyContent: "space-around",
+    backgroundColor:"#92A0AD"
   },
   addButton: {
     marginVertical: 7,

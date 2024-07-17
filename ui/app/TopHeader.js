@@ -21,8 +21,8 @@ const Header = ({ title }) => {
       <View style={styles.headerContainer}>
       
         <TouchableOpacity onPress={() => navigation.goBack(WelcomePage)}>
-        <StatusBar barStyle="light-content" backgroundColor="#0379e6" />
-          <Icon name="arrow-back" size={24} color="#fff" />
+        <StatusBar barStyle="dark-content" backgroundColor="#92A0AD" />
+          <Icon name="arrow-back" size={24} color="#000" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>{title}</Text>
         <View style={styles.placeholder} />
@@ -38,14 +38,14 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     paddingHorizontal: 16,
     paddingBottom: 10,
-    backgroundColor: "#0379e6",
+    backgroundColor: "#92A0AD",
     height: 40,
     // height: 40 + (Platform.OS === 'android' ? StatusBar.currentHeight : 0),
     // paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
   },
   headerTitle: {
     fontSize: 20,
-    color: "#fff",
+    color: "#000",
     fontWeight: "bold",
   },
   placeholder: {

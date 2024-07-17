@@ -1,6 +1,8 @@
 import { Link, router, useRouter, useRouteParams } from "expo-router";
 import React, { useContext, useEffect, useState } from "react";
 import { Modal, Button } from "react-native-paper";
+
+
 import {
   View,
   TextInput,
@@ -9,6 +11,7 @@ import {
   Text,
   Image,
   ImageBackground,
+  StatusBar,
   ActivityIndicator,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -134,6 +137,8 @@ export default function WelcomePage() {
 
   return (
     <>
+
+     <StatusBar barStyle="dark-content" backgroundColor="#92A0AD" />
       {loading ? (
         <View
           style={{
@@ -147,19 +152,20 @@ export default function WelcomePage() {
           <ActivityIndicator size="large" color="blue" />
         </View>
       ) : (
-        <View style={{ backgroundColor: "#ECECEC" }}>
+        <View style={{ backgroundColor: "#92A0AD" }}>
           <View style={{ position: "relative", zIndex: 78, width: "100%" }}>
             <Toast />
           </View>
 
-          <ImageBackground
+          {/* <ImageBackground
             style={styles.bgimage}
             source={require("../assets/welcome-bg.png")}
-          ></ImageBackground>
+          ></ImageBackground> */}
+
           <View style={styles.first}>
             <Text style={styles.Welcome}>
               Welcome{" "}
-              <Text style={{ color: "black", fontWeight: "bold" }}>Back,</Text>
+              <Text style={{ color: "black", fontWeight: "300" }}>Back,</Text>
             </Text>
             <Text style={styles.username}>{name} !</Text>
             <TouchableOpacity
@@ -171,7 +177,10 @@ export default function WelcomePage() {
                 {goal}
               </TextInput>
             </TouchableOpacity>
+            
+            
           </View>
+          <Text style={{textAlign:"center" ,fontWeight:"bold"}}>Goals for today</Text>
 
           <View style={styles.second}>
             <TouchableOpacity
@@ -182,7 +191,7 @@ export default function WelcomePage() {
                 style={{ height: "80%", width: "100%" }}
                 source={require("../assets/clock.png")}
               ></Image>
-              <Text>Actvitiy</Text>
+              <Text>Activity</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -193,7 +202,7 @@ export default function WelcomePage() {
                 style={{ height: "80%", width: "100%" }}
                 source={require("../assets/calendar.png")}
               ></Image>
-              <Text>Calender</Text>
+              <Text>Calendar</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -273,23 +282,24 @@ const styles = StyleSheet.create({
   },
 
   Welcome: {
-    fontWeight: "bold",
+    fontWeight: "300",
     marginTop: "12%",
     fontSize: 40,
-    color: "white",
+    color: "black",
   },
   username: {
-    color: "white",
+    color: "black",
     fontSize: 27,
-    fontWeight: "200",
+    fontWeight: "800",
   },
 
   usernameGoal: {
     marginTop: 35,
+    marginBottom:5,
     width: "83%",
-    backgroundColor: "white",
-    color: "blue",
-    fontWeight: "bold",
+    backgroundColor: "#E1E1E1",
+    color: "black",
+    fontWeight: "500",
     textAlign: "center",
     height: 35,
     padding: 5,
@@ -324,7 +334,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.8,
     shadowRadius: 3,
     elevation: 5,
-    backgroundColor: "white",
+    backgroundColor: "#E1E1E1",
     width: "40%",
     height: 150,
     borderRadius: 15,
@@ -341,7 +351,7 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
 
     elevation: 5,
-    backgroundColor: "white",
+    backgroundColor: "#E1E1E1",
     width: "40%",
     height: 150,
     borderRadius: 15,
@@ -356,7 +366,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.8,
     shadowRadius: 3,
     elevation: 5,
-    backgroundColor: "white",
+    backgroundColor: "#E1E1E1",
     width: "40%",
     height: 150,
     borderRadius: 15,
@@ -371,7 +381,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.8,
     shadowRadius: 3,
     elevation: 5,
-    backgroundColor: "white",
+    backgroundColor: "#E1E1E1",
     width: "40%",
     height: 150,
     borderRadius: 15,

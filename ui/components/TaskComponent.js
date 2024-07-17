@@ -164,7 +164,7 @@ const TaskComponent = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "white",
+    backgroundColor: "#E1E1E1",
     paddingVertical: 5,
   },
   date: {

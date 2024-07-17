@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import { View, StyleSheet } from "react-native";
 import { CalendarContext } from "./CalendarContext";
-import MyCalendarview from "../app/test";
+import MyCalendarview from "../app/week";
 import TaskComponent from "./TaskComponent";
 
 const WeekView = () => {
