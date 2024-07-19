@@ -29,6 +29,8 @@ const fetchToken = async () => {
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [emailerr, setEmailerr] = useState(null);
+  const [pwderr, setPwderr] = useState(null);
 
   useEffect(() => {
     fetchToken();
@@ -49,23 +51,40 @@ export default function Login() {
         >
           Login
         </Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Username or email"
-          onChangeText={(val) => {
-            setEmail(val);
-          }}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Password"
-          secureTextEntry={true}
-          onChangeText={(val) => {
-            setPassword(val);
-          }}
-        />
+        <View style={styles.errorContainer}>
+          <TextInput
+            style={styles.input}
+            placeholder="Username or email"
+            onChangeText={(val) => {
+              val ? setEmailerr(null) : setEmailerr("*required");
+              setEmail(val);
+            }}
+          />
+          {emailerr ? <Text style={styles.error}>{emailerr}</Text> : null}
+        </View>
 
-        <LoginButton email={email} password={password} />
+        <View style={styles.errorContainer}>
+          <TextInput
+            style={styles.input}
+            placeholder="Password"
+            secureTextEntry={true}
+            onChangeText={(val) => {
+              val ? setPwderr(null) : setPwderr("*required");
+
+              setPassword(val);
+            }}
+          />
+          {pwderr ? <Text style={styles.error}>{pwderr}</Text> : null}
+        </View>
+
+        <LoginButton
+          email={email}
+          password={password}
+          emailerr={emailerr}
+          pwderr={pwderr}
+          setEmailerr={setEmailerr}
+          setPwderr={setPwderr}
+        />
 
         <Text style={styles.optionText}>
           Don't have an account?{" "}
@@ -84,12 +103,13 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: 30,
+    gap: 12,
   },
   input: {
     height: 40,
     borderColor: "rgb(219 217 217)",
     borderWidth: 1,
-    marginBottom: 12,
+
     padding: 12,
     borderRadius: 9,
     width: "100%",
@@ -118,5 +138,16 @@ const styles = StyleSheet.create({
     height: 300,
     marginBottom: 20,
     aspectRatio: "1/1",
+  },
+  errorContainer: {
+    width: "100%",
+    // paddingHorizontal: 10,
+    margin: 0,
+  },
+  error: {
+    color: "red",
+    fontSize: 12,
+    fontStyle: "italic",
+    paddingHorizontal: 10,
   },
 });

@@ -19,6 +19,9 @@ export default function SignUpPage() {
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
+  const [pwderr, setPwderr] = useState(null);
+  const [emailerr, setEmailerr] = useState(null);
+  const [usrerr, setUsrerr] = useState(null);
 
   const toggleShowPassword = () => {
     setShowPassword(!showPassword);
@@ -38,8 +41,6 @@ export default function SignUpPage() {
           style={{
             fontSize: 35,
             fontWeight: "bold",
-            // width: "100%",
-            // color: "blue",
 
             marginBottom: 16,
           }}
@@ -49,40 +50,80 @@ export default function SignUpPage() {
 
         {/* username TextInput */}
 
-        <TextInput
-          maxLength={20}
-          style={styles.inputEmail}
-          placeholder="Username "
-          onChangeText={(val) => setUsername(val)}
-        />
+        <View style={{ width: "100%" }}>
+          <TextInput
+            maxLength={20}
+            style={styles.inputEmail}
+            placeholder="Username "
+            onChangeText={(val) => {
+              setUsername(val);
+              setUsrerr(validateUsername(val));
+            }}
+          />
+          {usrerr ? (
+            <View style={styles.errorContainer}>
+              <Text style={styles.error}>{usrerr}</Text>
+            </View>
+          ) : null}
+        </View>
 
         {/* email TextInput */}
-        <TextInput
-          style={styles.inputEmail}
-          keyboardType="email-address"
-          placeholder="Enter your email"
-          onChangeText={(val) => setEmail(val)}
-        />
+        <View style={{ width: "100%" }}>
+          <TextInput
+            style={styles.inputEmail}
+            keyboardType="email-address"
+            placeholder="Enter your email"
+            onChangeText={(val) => {
+              setEmail(val);
+              setEmailerr(validateEmail(val));
+            }}
+          />
+          {emailerr ? (
+            <View style={styles.errorContainer}>
+              <Text style={styles.error}>{emailerr}</Text>
+            </View>
+          ) : null}
+        </View>
 
         {/* Password TextInput */}
-        <View style={styles.passwordContainer}>
-          <TextInput
-            style={[styles.input, styles.fullInput]}
-            placeholder="Password"
-            secureTextEntry={!showPassword}
-            onChangeText={(val) => setPassword(val)}
-          />
-          <TouchableWithoutFeedback onPress={toggleShowPassword}>
-            <Ionicons
-              name={showPassword ? "eye-outline" : "eye-off-outline"}
-              color="#6c757d"
-              style={styles.toggleIcon}
+        <View style={{ width: "100%" }}>
+          <View style={styles.passwordContainer}>
+            <TextInput
+              style={[styles.input, styles.fullInput]}
+              placeholder="Password"
+              secureTextEntry={!showPassword}
+              onChangeText={(val) => {
+                setPassword(val);
+                setPwderr(validatePassword(val));
+              }}
             />
-          </TouchableWithoutFeedback>
+            <TouchableWithoutFeedback onPress={toggleShowPassword}>
+              <Ionicons
+                name={showPassword ? "eye-outline" : "eye-off-outline"}
+                color="#6c757d"
+                style={styles.toggleIcon}
+              />
+            </TouchableWithoutFeedback>
+          </View>
+          {pwderr ? (
+            <View style={styles.errorContainer}>
+              <Text style={styles.error}>{pwderr}</Text>
+            </View>
+          ) : null}
         </View>
 
         {/* Sign Up Button */}
-        <SignUpButton email={email} password={password} username={username} />
+        <SignUpButton
+          email={email}
+          password={password}
+          username={username}
+          emailerr={emailerr}
+          setEmailerr={setEmailerr}
+          pwderr={pwderr}
+          setPwderr={setPwderr}
+          usrerr={usrerr}
+          setUsrerr={setUsrerr}
+        />
 
         {/* Option Text */}
         <Text style={styles.optionText}>
@@ -101,13 +142,14 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    gap: 10,
     paddingHorizontal: 30,
   },
   input: {
     height: 40,
     borderColor: "rgb(219 217 217)",
     borderWidth: 1,
-    marginBottom: 12,
+    // marginBottom: 12,
     padding: 12,
     borderRadius: 9,
   },
@@ -120,7 +162,8 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginBottom: 12,
+
+    // marginBottom: 12,
     width: "100%",
   },
   signUpButton: {
@@ -159,8 +202,79 @@ const styles = StyleSheet.create({
     height: 40,
     borderColor: "rgb(219 217 217)",
     borderWidth: 1,
-    marginBottom: 12,
+    // marginBottom: 1,
     padding: 12,
     borderRadius: 9,
   },
+  errorContainer: {
+    width: "100%",
+    paddingHorizontal: 10,
+
+    margin: 0,
+  },
+  error: {
+    color: "red",
+    fontSize: 12,
+    fontStyle: "italic",
+  },
 });
+
+function validatePassword(input_string) {
+  const n = input_string.length;
+  if (n === 0) {
+    return "*required";
+  }
+  // Checking lower alphabet in string
+  let hasLower = false;
+  let hasUpper = false;
+  let hasDigit = false;
+  let specialChar = false;
+  const normalChars =
+    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890 ";
+
+  for (let i = 0; i < n; i++) {
+    if (input_string[i] >= "a" && input_string[i] <= "z") {
+      hasLower = true;
+    }
+    if (input_string[i] >= "A" && input_string[i] <= "Z") {
+      hasUpper = true;
+    }
+    if (input_string[i] >= "0" && input_string[i] <= "9") {
+      hasDigit = true;
+    }
+    if (!normalChars.includes(input_string[i])) {
+      specialChar = true;
+    }
+  }
+
+  // Strength of password
+  let strength = "Weak";
+  if (!hasDigit || !hasUpper || !hasLower || !specialChar || n < 5) {
+    return `*at least 5 characters ,have one lowercase, one uppercase, one special character and one digit`;
+  }
+
+  return null;
+}
+
+function validateUsername(val) {
+  if (!val) {
+    return "*required";
+  }
+
+  const regex = /^[a-zA-Z0-9_.]+$/;
+  if (regex.test(val)) {
+    return null;
+  }
+  return `*username can have alphabets,numbers, _ , . `;
+}
+
+function validateEmail(email) {
+  if (!email) {
+    return "*required";
+  }
+  const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (regex.test(email)) {
+    return null;
+  }
+  return "*not a valid email";
+}
