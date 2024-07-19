@@ -84,6 +84,7 @@ const Header = () => {
 const styles = StyleSheet.create({
   headerContainer: {
     padding: 10,
+    backgroundColor:"#92A0AD"
   },
   dateText: {
     fontSize: 18,
