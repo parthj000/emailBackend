@@ -8,6 +8,7 @@ import DayView from "../components/DayView";
 import WeekView from "../components/WeekView";
 import MonthView from "../components/MonthView";
 import Header1 from "./TopHeader";
+import FloatButton from "../components/AddButton";
 
 const MyCalendar = () => {
   return (
@@ -19,8 +20,9 @@ const MyCalendar = () => {
           <DayView />
           <WeekView />
           <MonthView />
-          <Footer />
-          <EventModal />
+          
+          
+          <FloatButton/> 
         </View>
       </CalendarProvider>
     </>

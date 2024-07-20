@@ -87,6 +87,8 @@ const TaskComponent = () => {
     setModalVisible(true); // Open modal
   };
 
+  console.log(currentDate +"task");
+
   // Render items function
   const renderItems = ({ item }) => (
     <TouchableOpacity

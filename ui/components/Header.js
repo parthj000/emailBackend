@@ -26,12 +26,13 @@ const Header = () => {
               backgroundColor: "transparent",
               padding: 4,
               borderRadius: 4,
+              backgroundColor:"#C8D5E1",borderRadius:5
             }}
             onPress={() => {
               setHeaderVisible(!headerVisible);
             }}
           >
-            <Text style={{ color: "blue" }}>View</Text>
+            <Text style={{ color: "black" ,}}>View</Text>
           </TouchableOpacity>
         </View>
 
@@ -96,20 +97,20 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
   },
   activeText: {
-    color: "white",
+    color: "black",
   },
   button: {
     padding: 7,
-    borderColor: "#007BFF",
+     borderColor: "#C8D5E1",
 
     borderWidth: 1,
     borderRadius: 5,
   },
   activeButton: {
-    backgroundColor: "#007BFF",
+    backgroundColor: "#C8D5E1",
   },
   buttonText: {
-    color: "blue",
+    color: "black",
     fontSize: 13,
   },
 });

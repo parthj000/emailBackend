@@ -28,14 +28,14 @@ const styles = StyleSheet.create({
   },
   addButton: {
     marginVertical: 7,
-    backgroundColor: "#007BFF",
+    backgroundColor: "#C8D5E1",
     padding: 10,
     borderRadius: 5,
 
     elevation: 10,
   },
   addButtonText: {
-    color: "#fff",
+    color: "black",
     textAlign: "center",
   },
 });
