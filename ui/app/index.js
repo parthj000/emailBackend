@@ -1,23 +1,19 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
-import Login from "./login";
-
-
 import { MyContext, MyContextProvider } from "../components/AppContext";
-import WeekView from "../components/WeekView";
-import DayView from "./test";
+import AddEvent from "../components/AddEvent";
+import Login from "./login"
 
 const App = () => {
   return (
     <>
-    
-      <MyContextProvider>
+      <AddEvent/>
+      {/* <MyContextProvider>
         <Login/>
-      </MyContextProvider>
+      </MyContextProvider> */}
     </>
   );
 };
 
 export default App;
-
 styles = StyleSheet.create({});

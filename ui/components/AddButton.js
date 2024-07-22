@@ -26,9 +26,9 @@ const FloatButton = () => {
   const handlePress = (name) => {
     if (name === 'add_event') {
       
-      setModalVisible(true);
-      // Handle add event action
-      // Alert.alert('Add Event', 'Event button pressed');
+      
+      onPressItem => setModalVisible(true)
+      
     } else if (name === 'add_task') {
       // Handle add task action
       Alert.alert('Add Task', 'Task button pressed');

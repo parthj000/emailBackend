@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, TouchableOpacity, StyleSheet } from 'react-native';
-import Modal from 'react-native-modal';
+import { StatusBar,Alert, Modal, StyleSheet, Text, Pressable, View, TextInput } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import { Picker } from '@react-native-picker/picker';
 
-const EventModal = ({ isVisible, onClose, onSave }) => {
+
+const AddEvent = () => {
+  const [modalVisible, setModalVisible] = useState(false);
   const [title, setTitle] = useState('');
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
@@ -17,135 +19,240 @@ const EventModal = ({ isVisible, onClose, onSave }) => {
   const [showStartTimePicker, setShowStartTimePicker] = useState(false);
   const [showEndTimePicker, setShowEndTimePicker] = useState(false);
 
-  const handleSave = () => {
-    const event = {
-      title,
-      startDate,
-      endDate,
-      startTime,
-      endTime,
-      description,
-      recurrence,
-    };
-    onSave(event);
-    onClose();
-  };
-
   return (
-    <Modal isVisible={isVisible} onBackdropPress={onClose}>
-      <View style={styles.modalContent}>
-        <Text style={styles.modalTitle}>Create Event</Text>
 
-        <TextInput
-          style={styles.input}
-          placeholder="Title"
-          value={title}
-          onChangeText={setTitle}
-        />
+    
+    <View style={styles.centeredView}>
+      
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          Alert.alert('Modal has been closed.');
+          setModalVisible(!modalVisible);
+        }}>
 
-        <TouchableOpacity onPress={() => setShowStartDatePicker(true)}>
-          <Text style={styles.input}>Start Date: {startDate.toDateString()}</Text>
-        </TouchableOpacity>
-        {showStartDatePicker && (
-          <DateTimePicker
-            value={startDate}
-            mode="date"
-            display="default"
-            onChange={(event, date) => {
-              setShowStartDatePicker(false);
-              if (date) setStartDate(date);
-            }}
-          />
-        )}
+        <View style={styles.fullScreenView}>
+        <StatusBar barStyle="dark-content" backgroundColor="#92A0AD" />
+          <View style={styles.modalView}>
+            <Text style={styles.modalText}>Add Event</Text>
 
-        <TouchableOpacity onPress={() => setShowEndDatePicker(true)}>
-          <Text style={styles.input}>End Date: {endDate.toDateString()}</Text>
-        </TouchableOpacity>
-        {showEndDatePicker && (
-          <DateTimePicker
-            value={endDate}
-            mode="date"
-            display="default"
-            onChange={(event, date) => {
-              setShowEndDatePicker(false);
-              if (date) setEndDate(date);
-            }}
-          />
-        )}
+            <TextInput
+              style={styles.input}
+              placeholder="Add title"
+              value={title}
+              onChangeText={setTitle}
+            />
 
-        <TouchableOpacity onPress={() => setShowStartTimePicker(true)}>
-          <Text style={styles.input}>Start Time: {startTime.toLocaleTimeString()}</Text>
-        </TouchableOpacity>
-        {showStartTimePicker && (
-          <DateTimePicker
-            value={startTime}
-            mode="time"
-            display="default"
-            onChange={(event, date) => {
-              setShowStartTimePicker(false);
-              if (date) setStartTime(date);
-            }}
-          />
-        )}
+            <View style={{flexDirection:"row",width:"100%",gap:24}}>
 
-        <TouchableOpacity onPress={() => setShowEndTimePicker(true)}>
-          <Text style={styles.input}>End Time: {endTime.toLocaleTimeString()}</Text>
-        </TouchableOpacity>
-        {showEndTimePicker && (
-          <DateTimePicker
-            value={endTime}
-            mode="time"
-            display="default"
-            onChange={(event, date) => {
-              setShowEndTimePicker(false);
-              if (date) setEndTime(date);
-            }}
-          />
-        )}
+            <Pressable onPress={() => setShowStartDatePicker(true)}>
+              <Text style={styles.input}>
+                Start Date: {startDate.toDateString()}
+              </Text>
+            </Pressable>
 
-        <TextInput
-          style={styles.input}
-          placeholder="Description"
-          value={description}
-          onChangeText={setDescription}
-        />
+            {showStartDatePicker && (
+              <DateTimePicker
+                value={startDate}
+                mode="date"
+                display="default"
+                onChange={(event, date) => {
+                  setShowStartDatePicker(false);
+                  if (date) setStartDate(date);
+                }}
+              />
+            )}
 
-        <TextInput
-          style={styles.input}
-          placeholder="Recurrence"
-          value={recurrence}
-          onChangeText={setRecurrence}
-        />
+            <Pressable onPress={() => setShowStartTimePicker(true)}>
+              <Text style={styles.input}>
+                {startTime.toLocaleTimeString()}
+              </Text>
+            </Pressable>
+            {showStartTimePicker && (
+              <DateTimePicker
+                value={startTime}
+                mode="time"
+                display="default"
+                onChange={(event, time) => {
+                  setShowStartTimePicker(false);
+                  if (time) setStartTime(time);
+                }}
+              />
+            )}
 
-        <View style={styles.buttonContainer}>
-          <Button title="Cancel" onPress={onClose} />
-          <Button title="Save" onPress={handleSave} />
+
+
+
+
+
+
+            </View>
+
+
+            <View style={{flexDirection:"row",width:"100%",gap:30}}>
+
+            <Pressable onPress={() => setShowEndDatePicker(true)}>
+              <Text style={styles.input}>
+                End Date: {endDate.toDateString()}
+              </Text>
+            </Pressable>
+            {showEndDatePicker && (
+              <DateTimePicker
+                value={endDate}
+                mode="date"
+                display="default"
+                onChange={(event, date) => {
+                  setShowEndDatePicker(false);
+                  if (date) setEndDate(date);
+                }}
+              />
+            )}
+
+<Pressable onPress={() => setShowEndTimePicker(true)}>
+              <Text style={styles.input}>
+                {endTime.toLocaleTimeString()}
+              </Text>
+            </Pressable>
+            {showEndTimePicker && (
+              <DateTimePicker
+                value={endTime}
+                mode="time"
+                display="default"
+                onChange={(event, time) => {
+                  setShowEndTimePicker(false);
+                  if (time) setEndTime(time);
+                }}
+              />
+            )}
+
+          </View>
+
+            
+
+            <TextInput
+              style={styles.input}
+              placeholder="Add Description"
+              value={description}
+              onChangeText={setDescription}
+            />
+
+            < View style={{width:"100%" ,backgroundColor: "#92A0AD"}}>
+            <Text>Select the Recurrence</Text>
+            <Picker 
+              
+            >
+            
+            <Picker.Item label="Weekly" value="1"  />
+            <Picker.Item label="Monthly" value="2" />
+            <Picker.Item label="Daily" value="3" />
+            <Picker.Item label="None" value="4" />
+            
+            </Picker>
+            
+
+            </View>
+
+            <View style={{marginTop:30,flexDirection:"row" ,gap:50}}>
+
+            <Pressable
+              style={[styles.button, styles.buttonClose]}
+              onPress={() => setModalVisible(!modalVisible)}>
+              <Text style={styles.textStyle}>Close</Text>
+            </Pressable>
+
+            <Pressable
+              style={[styles.button, styles.buttonAdd]}
+              onPress={() => console.log(startDate +"date")}>
+              <Text style={styles.textStyle}>Add Event</Text>
+            </Pressable>
+
+            </View>
+
+
+
+          </View>
         </View>
-      </View>
-    </Modal>
+      </Modal>
+
+      <Pressable
+        style={[styles.button, styles.buttonOpen]}
+        onPress={() => setModalVisible(true)}>
+        <Text style={styles.textStyle}>Show Modal</Text>
+      </Pressable>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  modalContent: {
-    backgroundColor: 'white',
-    padding: 20,
-    borderRadius: 10,
+  centeredView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 22,
   },
-  modalTitle: {
-    fontSize: 18,
+  fullScreenView: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColr: "#92A0AD"
+  },
+  modalView: {
+    flex: 1,
+    width: '100%',
+    backgroundColor: "#92A0AD",
+    
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  button: {
+    
+    borderRadius:5,
+    padding: 10,
+    elevation: 2,
+  },
+  buttonOpen: {
+    backgroundColor: '#F194FF',
+  },
+  buttonClose: {
+    
+    backgroundColor: '#C8D5E1',
+  },
+  textStyle: {
+    color: 'black',
     fontWeight: 'bold',
-    marginBottom: 10,
+    textAlign: 'center',
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: 'center',
   },
   input: {
-    borderBottomWidth: 1,
+    // borderBottomWidth: 1,
     marginBottom: 10,
     padding: 5,
+    width: '100%',
+    
   },
-  buttonContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
+
+  buttonAdd:{
+    
+    borderRadius:5,
+    padding: 10,
+    elevation: 2,
+    backgroundColor: '#C8D5E1',
+    
+  }
+
 });
 
-export default EventModal;
+export default AddEvent;
