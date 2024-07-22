@@ -9,18 +9,18 @@ import {
   SafeAreaView,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import WelcomePage from "./welcome";
+import WeekView from "../app/week";
 import Icon from "react-native-vector-icons/Ionicons";
 
 const Header = ({ title }) => {
   const navigation = useNavigation();
 
   return (
-    <SafeAreaView style={{ backgroundColor: "0379e6" }}>
+    <SafeAreaView style={{ backgroundColor: "#92A0AD" }}>
       
       <View style={styles.headerContainer}>
       
-        <TouchableOpacity onPress={() => navigation.goBack(WelcomePage)}>
+        <TouchableOpacity onPress={() => navigation.goBack(WeekView)}>
         <StatusBar barStyle="dark-content" backgroundColor="#92A0AD" />
           <Icon name="arrow-back" size={24} color="#000" />
         </TouchableOpacity>

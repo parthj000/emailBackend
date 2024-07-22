@@ -233,10 +233,10 @@ export default function WelcomePage() {
 
       <Modal
         visible={modalVisible}
+        
         onDismiss={() => {
           setSuccess(false);
           setModalVisible(false);
-
           return;
         }}
         contentContainerStyle={styles.modalView}

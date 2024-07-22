@@ -1,10 +1,12 @@
 
 import React, { useState } from 'react';
-import { View, StyleSheet, Alert } from 'react-native';
+import { View, StyleSheet, Alert,Modal } from 'react-native';
 import { FloatingAction } from 'react-native-floating-action';
-import EventModal from "./AddEvent"
+import AddEvent from "./AddEvent";
+
 
 const FloatButton = () => {
+  const [modalVisible, setModalVisible] = useState(false);
   const actions = [
     {
       text: 'Add Event',
@@ -20,14 +22,15 @@ const FloatButton = () => {
     },
   ];
 
-  const [isModalVisible, setModalVisible] = useState(false);
+  
   const [events, setEvents] = useState([]);
 
   const handlePress = (name) => {
     if (name === 'add_event') {
       
+
       
-      onPressItem => setModalVisible(true)
+      setModalVisible(true);
       
     } else if (name === 'add_task') {
       // Handle add task action
@@ -40,12 +43,29 @@ const FloatButton = () => {
   };
 
   return (
+
     <View style={styles.container}>
+
       <FloatingAction
         actions={actions}
         color="#92A0AD"
         onPressItem={handlePress}
       />
+
+<Modal
+        visible={modalVisible}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.modalContainer}>
+          <AddEvent 
+            modalVisible={modalVisible} setModalVisible={setModalVisible} 
+          />
+        </View>
+      </Modal>
+      
+      
     </View>
   );
 };

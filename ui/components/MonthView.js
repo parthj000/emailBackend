@@ -12,6 +12,7 @@ const events = [
     title: 'Event 1',
     start: new Date(2024, 6, 20, 10, 0),
     end: new Date(2024, 6, 20, 12, 0),
+    
   },
   {
     title: 'Event 2',

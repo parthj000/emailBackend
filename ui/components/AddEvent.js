@@ -2,9 +2,13 @@ import React, { useState } from 'react';
 import { StatusBar,Alert, Modal, StyleSheet, Text, Pressable, View, TextInput } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Picker } from '@react-native-picker/picker';
+import { useNavigation } from "@react-navigation/native";
+import WeekView from "../components/WeekView";
+
 
 
 const AddEvent = () => {
+  const navigation = useNavigation();
   const [modalVisible, setModalVisible] = useState(false);
   const [title, setTitle] = useState('');
   const [startDate, setStartDate] = useState(new Date());
@@ -13,6 +17,7 @@ const AddEvent = () => {
   const [endTime, setEndTime] = useState(new Date());
   const [description, setDescription] = useState('');
   const [recurrence, setRecurrence] = useState('');
+  
 
   const [showStartDatePicker, setShowStartDatePicker] = useState(false);
   const [showEndDatePicker, setShowEndDatePicker] = useState(false);
@@ -27,11 +32,8 @@ const AddEvent = () => {
       <Modal
         animationType="slide"
         transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => {
-          Alert.alert('Modal has been closed.');
-          setModalVisible(!modalVisible);
-        }}>
+        // visible={modalVisible}
+        >
 
         <View style={styles.fullScreenView}>
         <StatusBar barStyle="dark-content" backgroundColor="#92A0AD" />
@@ -158,13 +160,13 @@ const AddEvent = () => {
 
             <Pressable
               style={[styles.button, styles.buttonClose]}
-              onPress={() => setModalVisible(!modalVisible)}>
+              onPress={() => navigation.goBack()}>
               <Text style={styles.textStyle}>Close</Text>
             </Pressable>
 
             <Pressable
-              style={[styles.button, styles.buttonAdd]}
-              onPress={() => console.log(startDate +"date")}>
+              style={[styles.button, styles.buttonAdd]}>
+                
               <Text style={styles.textStyle}>Add Event</Text>
             </Pressable>
 
@@ -176,11 +178,11 @@ const AddEvent = () => {
         </View>
       </Modal>
 
-      <Pressable
+      {/* <Pressable
         style={[styles.button, styles.buttonOpen]}
         onPress={() => setModalVisible(true)}>
         <Text style={styles.textStyle}>Show Modal</Text>
-      </Pressable>
+      </Pressable> */}
     </View>
   );
 };

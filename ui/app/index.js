@@ -7,10 +7,10 @@ import Login from "./login"
 const App = () => {
   return (
     <>
-      <AddEvent/>
-      {/* <MyContextProvider>
+      
+      <MyContextProvider>
         <Login/>
-      </MyContextProvider> */}
+      </MyContextProvider>
     </>
   );
 };
