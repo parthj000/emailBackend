@@ -3,7 +3,7 @@ import { StatusBar,Alert, Modal, StyleSheet, Text, Pressable, View, TextInput } 
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { Picker } from '@react-native-picker/picker';
 import { useNavigation } from "@react-navigation/native";
-
+import WeekView from "../components/WeekView";
 
 
 

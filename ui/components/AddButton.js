@@ -52,25 +52,18 @@ const FloatButton = () => {
         onPressItem={handlePress}
       />
 
-        {/* <Modal
+  <Modal
         visible={modalVisible}
         animationType="slide"
         transparent={true}
         onRequestClose={() => setModalVisible(false)}
-        >
+      >
         <View style={styles.modalContainer}>
           <AddEvent 
             modalVisible={modalVisible} setModalVisible={setModalVisible} 
           />
         </View>
-      </Modal> */}
-
-
-      <View style={styles.modalContainer}>
-          <AddEvent 
-            modalVisible={modalVisible} setModalVisible={setModalVisible} 
-          />
-        </View>
+      </Modal>
       
       
     </View>
