@@ -1,6 +1,6 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
-import WelcomePage from "./welcome";
+import { MyContext, MyContextProvider } from "../components/AppContext";
 import Login from "./login";
 
 import { MyContextProvider } from "../components/AppContext";
@@ -8,6 +8,8 @@ import { MyContextProvider } from "../components/AppContext";
 const App = () => {
   return (
     <>
+      
+
       <MyContextProvider>
         <Login />
       </MyContextProvider>
@@ -16,5 +18,4 @@ const App = () => {
 };
 
 export default App;
-
 styles = StyleSheet.create({});

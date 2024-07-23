@@ -12,6 +12,7 @@ import {
   ImageBackground,
   StatusBar,
   ActivityIndicator,
+  
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Buffer } from "buffer";
@@ -267,10 +268,10 @@ export default function WelcomePage() {
 
       <Modal
         visible={modalVisible}
+        
         onDismiss={() => {
           setSuccess(false);
           setModalVisible(false);
-
           return;
         }}
         contentContainerStyle={styles.modalView}
