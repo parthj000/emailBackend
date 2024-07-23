@@ -1,7 +1,6 @@
 // src/pages/api/events.js
 import clientPromise from '../../lib/mongodb';
 import jwt from 'jsonwebtoken';
-import { ObjectId } from 'mongodb';
 
 export default async function handler(req, res) {
   const { method } = req;
@@ -23,51 +22,66 @@ export default async function handler(req, res) {
     const eventsCollection = db.collection('events');
 
     if (method === 'POST') {
-      const { name, startDate, endDate, category, description, recurrence } = req.body;
-        // if (!name || !startDate || !endDate || !category || !description || !recurrence) {
-        //   return res.status(400).json({ message: 'All fields are required' });
-        // }
-      if (!name || !startDate || !category || !description || !recurrence) {
+      const { title, startDate, endDate, category, description, recurrence } = req.body;
+
+      if (!title || !startDate || !category || !description || recurrence === undefined) {
         return res.status(400).json({ message: 'All fields are required' });
       }
 
-      let endDateValue = endDate;
-      if (!endDateValue) {    //If endDate not given, event pesist for 3 months
-        const startDateDate = new Date(startDate);
-        endDateValue = new Date(startDateDate.setMonth(startDateDate.getMonth() + 3));
+      // Validate and convert startDate
+      const startDateTimestamp = new Date(startDate).getTime();
+      const endDateTimestamp = new Date(endDate).getTime();
+      console.log(endDateTimestamp);
+      if (isNaN(startDateTimestamp)) {
+        return res.status(400).json({ message: 'Invalid startDate format' });
       }
-   
+
+      // // Determine endDate if not provided
+      // let endDateValue = endDate? new Date().getTime() : new Date().getTime() + 90 * 24 * 60 * 60 * 1000;
+      // if (isNaN(endDateValue)) {
+      //   return res.status(400).json({ message: 'Invalid endDate format' });
+      // }
+
       const newEvent = {
         userId: decoded.userId,
-        name,
-        startDate: new Date(startDate),
-        endDate: endDateValue,
+        title,
+        startDate: startDateTimestamp,
+        endDate: endDateTimestamp,
         category,
         description,
-        recurrence,
-        createdAt: new Date(),
+        recurrence: recurrence, // Convert recurrence to integer
+        // createdAt: Date.now(),
+        createdAt: Math.floor(Date.now() / 1000) // Store createdAt as Unix timestamp in seconds
+        // createdAt: Math.floor(new Date().getTime() / 1000) // Convert current time to Unix timestamp in seconds
       };
 
       await eventsCollection.insertOne(newEvent);
-      // return res.status(201).json({ message: 'Event created successfully', event: newEvent });
-
-      return res.status(201).json({ message: 'Event created successfully'  });
+      return res.status(201).json({ message: 'Event created successfully' });
     }
 
     if (method === 'GET') {
-      const { date } = req.body;
+      const { startDate, endDate } = req.body;
 
-      if (!date) {
+      if (!startDate || !endDate) {
         return res.status(400).json({ message: 'Date is required' });
       }
 
+      const startTimestamp = new Date(startDate).getTime();
+      const endTimestamp = new Date(endDate).getTime();
+
+      if (isNaN(startTimestamp) || isNaN(endTimestamp)) {
+        return res.status(400).json({ message: 'Invalid date format' });
+      }
+
       const events = await eventsCollection.find({
-        userId: decoded.userId
+        userId: decoded.userId,
+        startDate: { $lte: endTimestamp },
+        endDate: { $gte: startTimestamp }
       }).toArray();
 
-      const filteredEvents = generateRecurringEvents(events, new Date(date));
+      // const recurringEvents = generateRecurringEvents(events, startTimestamp, endTimestamp);
 
-      return res.status(200).json({ events: filteredEvents });
+      return res.status(200).json({ events });
     }
   } catch (error) {
     console.error(error);
@@ -75,56 +89,72 @@ export default async function handler(req, res) {
   }
 }
 
+function generateRecurringEvents(events, startTimestamp, endTimestamp) {
+  const result = [];
 
-function generateRecurringEvents(events, targetDate) {
-    const result = [];
-  
-    events.forEach(event => {
-      const { startDate, endDate, recurrence } = event;
-  
-      const start = new Date(startDate);
-      const end = new Date(endDate);
-      const target = new Date(targetDate);
-  
-      if (recurrence === 'none') {
-        if (isSameDay(start, target)) {
-          result.push(event);
-        }
-      } else if (recurrence === 'daily') {
-        if (isWithinDateRange(start, end, target)) {
-          result.push({...event, startDate: target, endDate: new Date(target).setHours(end.getHours(), end.getMinutes()) });
-        }
-      } else if (recurrence === 'weekly') {
-        const weeklyOffset = (target - start) / (7 * 24 * 60 * 60 * 1000);
-        const weeklyDate = new Date(start.getTime() + weeklyOffset * 7 * 24 * 60 * 60 * 1000);
-        if (isWithinDateRange(start, end, weeklyDate)) {
-          result.push({...event, startDate: weeklyDate, endDate: new Date(weeklyDate).setHours(end.getHours(), end.getMinutes()) });
-        }
-      } else if (recurrence === 'monthly') {
-        const monthlyOffset = (target.getFullYear() - start.getFullYear()) * 12 + (target.getMonth() - start.getMonth());
-        const monthlyDate = new Date(start.getTime() + monthlyOffset * 30 * 24 * 60 * 60 * 1000);
-        if (isWithinDateRange(start, end, monthlyDate)) {
-          result.push({...event, startDate: monthlyDate, endDate: new Date(monthlyDate).setHours(end.getHours(), end.getMinutes()) });
-        }
+  const startDate = new Date(startTimestamp);
+  const endDate = new Date(endTimestamp);
+
+  events.forEach(event => {
+    const { startDate: eventStartDate, endDate: eventEndDate, recurrence } = event;
+
+    const start = new Date(eventStartDate);
+    const end = new Date(eventEndDate);
+
+    if (recurrence === 'none') {
+      if (isWithinDateRange(start, end, startDate, endDate)) {
+        result.push({ ...event, startDate: start.getTime(), endDate: end });
       }
-    });
-  
-    return result;
-  }
-function isSameDay(date1, date2) {
-    return date1.getUTCFullYear() === date2.getUTCFullYear() &&
-      date1.getUTCMonth() === date2.getUTCMonth() &&
-      date1.getUTCDate() === date2.getUTCDate();
-  }
-  
-  function isWithinDateRange(startDate, endDate, targetDate) {
-    return targetDate >= startDate && targetDate <= endDate;
-  }
-  
-  function isSameDayOfWeek(date1, date2) {
-    return date1.getUTCDay() === date2.getUTCDay();
-  }
-  
-  function isSameDayOfMonth(date1, date2) {
-    return date1.getUTCDate() === date2.getUTCDate();
-  }
+    } else if (recurrence === 'daily') {
+      let current = new Date(startTimestamp);
+      while (current <= endDate) {
+        if (isWithinDateRange(start, end, current, current)) {
+          result.push({
+            ...event,
+            startDate: current.getTime(),
+            endDate: new Date(current.setHours(end.getHours(), end.getMinutes()))
+          });
+        }
+        current.setDate(current.getDate() + 1);
+      }
+    } else if (recurrence === 'weekly') {
+      let current = new Date(startTimestamp);
+      while (current <= endDate) {
+        if (isWithinDateRange(start, end, current, current) && isSameDayOfWeek(start, current)) {
+          result.push({
+            ...event,
+            startDate: current.getTime(),
+            endDate: new Date(current.setHours(end.getHours(), end.getMinutes()))
+          });
+        }
+        current.setDate(current.getDate() + 1);
+      }
+    } else if (recurrence === 'monthly') {
+      let current = new Date(startTimestamp);
+      while (current <= endDate) {
+        if (isWithinDateRange(start, end, current, current) && isSameDayOfMonth(start, current)) {
+          result.push({
+            ...event,
+            startDate: current.getTime(),
+            endDate: new Date(current.setHours(end.getHours(), end.getMinutes()))
+          });
+        }
+        current.setMonth(current.getMonth() + 1);
+      }
+    }
+  });
+
+  return result;
+}
+
+function isWithinDateRange(start, end, startDate, endDate) {
+  return (start >= startDate && start <= endDate) || (end >= startDate && end <= endDate) || (start <= startDate && end >= endDate);
+}
+
+function isSameDayOfWeek(date1, date2) {
+  return date1.getUTCDay() === date2.getUTCDay();
+}
+
+function isSameDayOfMonth(date1, date2) {
+  return date1.getUTCDate() === date2.getUTCDate();
+}

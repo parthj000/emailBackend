@@ -45,10 +45,11 @@ export default async (req, res) => {
       return res.status(401).json({ message: 'Invalid password' });
     }
     
-    //username or email and password are valid, handler generates a JWT token using jwt.sign 
+    //check username or email and password are valid, handler generates a JWT token using jwt.sign 
     //token includes user's ID and email, and it expires in 1 hour.
+    const sixMonthsInSeconds = 6 * 30 * 24 * 60 * 60; // expires in 6 months in seconds
     const token = jwt.sign({ userId: user._id, email: user.email }, process.env.JWT_SECRET, {
-      expiresIn: '1h',
+      expiresIn: sixMonthsInSeconds,
     });
 
     res.status(200).json({ token });
