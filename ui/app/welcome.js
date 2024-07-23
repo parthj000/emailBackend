@@ -2,7 +2,6 @@ import { Link, router, useRouter, useRouteParams } from "expo-router";
 import React, { useContext, useEffect, useState } from "react";
 import { Modal, Button } from "react-native-paper";
 
-
 import {
   View,
   TextInput,
@@ -66,6 +65,7 @@ export default function WelcomePage() {
         console.log(data);
         throw new Error("something went wrong");
       }
+      throw new Error("user is not authorized");
     } catch (error) {
       if (error.message === "Network request failed") {
         console.log(error);
@@ -137,8 +137,7 @@ export default function WelcomePage() {
 
   return (
     <>
-
-     <StatusBar barStyle="dark-content" backgroundColor="#92A0AD" />
+      <StatusBar barStyle="dark-content" backgroundColor="#92A0AD" />
       {loading ? (
         <View
           style={{
@@ -161,6 +160,42 @@ export default function WelcomePage() {
             style={styles.bgimage}
             source={require("../assets/welcome-bg.png")}
           ></ImageBackground> */}
+          <View style={{ paddingTop: 30, marginHorizontal: 80 }}>
+            <TouchableOpacity
+              style={{
+                backgroundColor: "transparent",
+                width: 60,
+                alignSelf: "flex-end",
+                alignItems: "center",
+                justifyContent: "center",
+                borderRadius: 4,
+                padding: 5,
+                borderColor: "black",
+                borderWidth: 1,
+              }}
+              onPress={async () => {
+                try {
+                  console.log("pressed");
+                  setLoading(true);
+                  console.log(loading);
+                  await AsyncStorage.removeItem("token").then(() => {
+                    setLoading(false);
+                    router.push("/login");
+                  });
+
+                  return;
+                } catch (err) {
+                  setLoading(false);
+                  Toast.show({
+                    type: "error",
+                    text1: err.message,
+                  });
+                }
+              }}
+            >
+              <Text>Logout</Text>
+            </TouchableOpacity>
+          </View>
 
           <View style={styles.first}>
             <Text style={styles.Welcome}>
@@ -177,10 +212,10 @@ export default function WelcomePage() {
                 {goal}
               </TextInput>
             </TouchableOpacity>
-            
-            
           </View>
-          <Text style={{textAlign:"center" ,fontWeight:"bold"}}>Goals for today</Text>
+          <Text style={{ textAlign: "center", fontWeight: "bold" }}>
+            Goals for today
+          </Text>
 
           <View style={styles.second}>
             <TouchableOpacity
@@ -295,7 +330,7 @@ const styles = StyleSheet.create({
 
   usernameGoal: {
     marginTop: 35,
-    marginBottom:5,
+    marginBottom: 5,
     width: "83%",
     backgroundColor: "#E1E1E1",
     color: "black",

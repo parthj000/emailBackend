@@ -9,6 +9,11 @@ import Toast from "react-native-toast-message";
 
 async function signUp(email, username, password, setLoading) {
   setLoading(true);
+  console.log({
+    username: username,
+    password: password,
+    email: email,
+  });
   await fetch(`${process.env.BACKEND_URI}/api/signup`, {
     method: "POST",
     headers: {
@@ -46,8 +51,9 @@ async function signUp(email, username, password, setLoading) {
     });
 }
 
-const SignUpButton = ({ email, username, password }) => {
+const SignUpButton = (props) => {
   const [loading, setLoading] = useState(false);
+
   return (
     <>
       {loading ? (
@@ -57,7 +63,21 @@ const SignUpButton = ({ email, username, password }) => {
           style={styles.signUpButton}
           onPress={async () => {
             try {
-              await signUp(email, username, password, setLoading);
+              if (!props.username || !props.password || !props.email) {
+                props.username ? null : props.setUsrerr("*required");
+                props.password ? null : props.setPwderr("*required");
+                props.email ? null : props.setEmailerr("*required");
+                return null;
+              } else if (props.emailerr || props.pwderr || props.usrerr) {
+                return null;
+              }
+
+              await signUp(
+                props.email,
+                props.username,
+                props.password,
+                setLoading
+              );
             } catch (err) {
               console.log(err);
             }
