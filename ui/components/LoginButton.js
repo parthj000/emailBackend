@@ -49,7 +49,7 @@ async function logIn2(email, password, setLoading) {
   }
 }
 
-const LoginButton = ({ email, password }) => {
+const LoginButton = (props) => {
   const [loading, setLoading] = useState(false);
 
   return (
@@ -61,7 +61,13 @@ const LoginButton = ({ email, password }) => {
           style={styles.signUpButton}
           onPress={async () => {
             try {
-              await logIn2(email, password, setLoading);
+              if (!props.email || !props.password) {
+                props.email ? null : props.setEmailerr("*required");
+                props.password ? null : props.setPwderr("*required");
+                return null;
+              }
+
+              await logIn2(props.email, props.password, setLoading);
             } catch (err) {
               console.log(err);
             }
