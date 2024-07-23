@@ -4,7 +4,7 @@
   "main": "expo-router/entry",
   "scripts": {
     "start": "expo start",
-    "app":"npx expo start",
+    "app": "npx expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web"
@@ -27,6 +27,7 @@
     "react-native": "^0.74.3",
     "react-native-big-calendar": "^4.13.2",
     "react-native-calendars": "^1.1305.0",
+    "react-native-element-dropdown": "^2.12.1",
     "react-native-floating-action": "^1.22.0",
     "react-native-modal": "^13.0.1",
     "react-native-paper": "^5.12.3",

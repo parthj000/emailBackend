@@ -1,18 +1,19 @@
 import { StyleSheet, Text, View } from "react-native";
 import React from "react";
-import { MyContext, MyContextProvider } from "../components/AppContext";
-import Login from "./login";
 
-import { MyContextProvider } from "../components/AppContext";
+import Login from "./login";
+import AddEvent from "../components/AddEvent";
+
+
 
 const App = () => {
   return (
     <>
       
 
-      <MyContextProvider>
-        <Login />
-      </MyContextProvider>
+      
+        <AddEvent/>
+      
     </>
   );
 };
