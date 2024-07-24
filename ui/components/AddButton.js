@@ -3,6 +3,8 @@ import React, { useState } from 'react';
 import { View, StyleSheet, Alert,Modal } from 'react-native';
 import { FloatingAction } from 'react-native-floating-action';
 import AddEvent from "./AddEvent";
+import AddTask from "../app/addtask"
+import { router } from 'expo-router';
 
 
 const FloatButton = () => {
@@ -28,10 +30,8 @@ const FloatButton = () => {
   const handlePress = (name) => {
     if (name === 'add_event') {
       
+      router.push("addtask")
 
-      
-      setModalVisible(true);
-      
     } else if (name === 'add_task') {
       // Handle add task action
       Alert.alert('Add Task', 'Task button pressed');
@@ -52,18 +52,7 @@ const FloatButton = () => {
         onPressItem={handlePress}
       />
 
-  <Modal
-        visible={modalVisible}
-        animationType="slide"
-        transparent={true}
-        onRequestClose={() => setModalVisible(false)}
-      >
-        <View style={styles.modalContainer}>
-          <AddEvent 
-            modalVisible={modalVisible} setModalVisible={setModalVisible} 
-          />
-        </View>
-      </Modal>
+  
       
       
     </View>

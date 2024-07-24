@@ -125,6 +125,7 @@ const MonthView = () => {
   };
 
   return (
+
     <GestureHandlerRootView style={{ flex: 1 }}>
       <View style={styles.container}>
         <Calendar
@@ -144,6 +145,7 @@ const MonthView = () => {
         </View>
       </View>
     </GestureHandlerRootView>
+
   );
 };
 
