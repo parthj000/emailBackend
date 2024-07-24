@@ -56,7 +56,7 @@ export default async (req, res) => {
     }
   } else if (req.method === 'GET') {
     // GET request handler
-    const { token } = req.body;
+    const { token } = req.query;
 
     if (!token) {
       return res.status(400).json({ message: 'Token is required' });
