@@ -4,8 +4,30 @@ import { CalendarContext } from "./CalendarContext";
 import { Divider } from "react-native-paper";
 
 const Header = () => {
-  const { view, setView, currentDate, headerVisible, setHeaderVisible } =
-    useContext(CalendarContext);
+  const {
+    view,
+    setView,
+    currentDate,
+    headerVisible,
+    setHeaderVisible,
+    month,
+    setMonth,
+  } = useContext(CalendarContext);
+
+  const monthMap = {
+    0: "January",
+    1: "February",
+    2: "March",
+    3: "April",
+    4: "May",
+    5: "June",
+    6: "July",
+    7: "August",
+    8: "September",
+    9: "October",
+    10: "November",
+    11: "December",
+  };
 
   return (
     <>
@@ -18,21 +40,20 @@ const Header = () => {
             paddingHorizontal: 10,
           }}
         >
-          <Text style={styles.dateText}>
-            {new Date(currentDate).toDateString()}
-          </Text>
+          <Text style={styles.dateText}>{monthMap[month]}</Text>
           <TouchableOpacity
             style={{
               backgroundColor: "transparent",
               padding: 4,
               borderRadius: 4,
-              backgroundColor:"#C8D5E1",borderRadius:5
+              backgroundColor: "#C8D5E1",
+              borderRadius: 5,
             }}
             onPress={() => {
               setHeaderVisible(!headerVisible);
             }}
           >
-            <Text style={{ color: "black" ,}}>View</Text>
+            <Text style={{ color: "black" }}>View</Text>
           </TouchableOpacity>
         </View>
 
@@ -85,7 +106,7 @@ const Header = () => {
 const styles = StyleSheet.create({
   headerContainer: {
     padding: 10,
-    backgroundColor:"#92A0AD"
+    backgroundColor: "#92A0AD",
   },
   dateText: {
     fontSize: 18,
@@ -101,7 +122,7 @@ const styles = StyleSheet.create({
   },
   button: {
     padding: 7,
-     borderColor: "#C8D5E1",
+    borderColor: "#C8D5E1",
 
     borderWidth: 1,
     borderRadius: 5,
