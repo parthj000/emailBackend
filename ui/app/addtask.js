@@ -1,11 +1,12 @@
 import { StyleSheet, Text, View, StatusBar, TextInput, TouchableOpacity } from 'react-native';
 import React, { useState } from 'react';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import Divider from "./Divder"; // Ensure this is the correct import for your Divider component
+import Divider from "../components/Divder"; // Ensure this is the correct import for your Divider component
 import { Dropdown } from 'react-native-element-dropdown';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
 import { router } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const AddTask = () => {
   const data = [
@@ -38,15 +39,19 @@ const AddTask = () => {
       recurrence:selectedValue
 
     }
+
+    
+
     console.log(data)
     try {
-      const request =  await fetch("https://714a-2405-201-5c0e-88c3-f1b4-8141-4720-c526.ngrok-free.app/api/events",{
+      const token = await AsyncStorage.getItem("token");
+      const request = await fetch(`${process.env.BACKEND_URI}/api/events`,{
         method:"POST",
         headers:{
           "Content-Type":"application/json"
         },
         body:JSON.stringify({
-          token:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjgzYWNlM2U0Yzg0ZGIyOTQxMmNhYjUiLCJlbWFpbCI6InRlc3RAdGVzdC5jb20iLCJpYXQiOjE3MjE4MjEyMTgsImV4cCI6MTczNzM3MzIxOH0.2rpdjVJ7pQdjZPZKVuLzu5bc6Y_o2-GtviZfs21dpvw",
+          token:token,
           startDate:startTime.valueOf(),
           endDate:endTime.valueOf(),
           title:firstInput,
@@ -178,6 +183,8 @@ const AddTask = () => {
               />
             )}
 
+
+            <View></View>
             <TouchableOpacity onPress={() => setShowEndTimePicker(true)} style={styles.date}>
               <Text>{endTime.toLocaleTimeString()}</Text>
             </TouchableOpacity>
@@ -214,8 +221,8 @@ const AddTask = () => {
           </View>
         </View>
 
-        <View style={{ flexDirection: "row", justifyContent: "space-between", padding: 15 }}>
-          <TouchableOpacity style={{ backgroundColor: "#EEEEEE", padding: 8, borderRadius: 5 }}>
+        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+          <TouchableOpacity onPress={()=> {router.push("calendar")}} style={{ backgroundColor: "#EEEEEE", padding: 8, borderRadius: 5 }}>
             <Text style={{ fontWeight: "bold" }}>Close</Text>
           </TouchableOpacity>
 
