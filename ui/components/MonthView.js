@@ -76,6 +76,7 @@ const MonthView = () => {
   return (
     <View style={styles.container}>
       <Calendar
+        
         events={events}
         height={height}
         width={width}

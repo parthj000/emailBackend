@@ -3,17 +3,17 @@ import React from "react";
 
 import Login from "./login";
 import AddEvent from "../components/AddEvent";
+import MyCalendarComponent from "./test";
+import AddTask from "../components/AddTask";
+import Toast from "react-native-toast-message";
 
 
 
 const App = () => {
   return (
     <>
-      
-
-      
-        <AddEvent/>
-      
+      <Toast />
+    <AddTask/>
     </>
   );
 };

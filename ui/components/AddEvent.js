@@ -1,17 +1,20 @@
-import { StyleSheet, Text, View,StatusBar,Platform ,TextInput, TouchableOpacity} from 'react-native'
+import { StyleSheet, Text, View,StatusBar,Button,TextInput, TouchableOpacity} from 'react-native'
 import {React,useState} from 'react'
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Divder from "./Divder"
 import {Dropdown} from 'react-native-element-dropdown';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { SlideInRight } from 'react-native-reanimated';
 const AddEvent = () => {
 
 
   const data = [
+    { label: 'No Repeat', value: 'no_repeat' },
+    { label: 'Daily', value: 'daily' },
     { label: 'Weekly', value: 'weekly' },
     { label: 'Monthly', value: 'monthly' },
-    { label: 'Daily', value: 'daily' },
-    { label: 'No Repeat', value: 'no_repeat' },
+    
+    
   ];
   
 
@@ -20,18 +23,20 @@ const AddEvent = () => {
   const dateString = date.toDateString();
   const formattedDate = dateString.split(' ').slice(1).join(' ');
   const [selectedValue, setSelectedValue] = useState('no_repeat');
+  console.log(date)
 
 
   const [showStartDatePicker, setShowStartDatePicker] = useState(false);
   const [showStartTimePicker, setShowStartTimePicker] = useState(false);
+  const [showEndTimePicker, setShowEndTimePicker] = useState(false);
 
   return (
 
     <>
     
-    
-    <View style={styles.container}>
     <StatusBar barStyle="dark-content" backgroundColor="#92A0AD" />
+    <View style={styles.container}>
+    
     
     
       
@@ -64,7 +69,7 @@ const AddEvent = () => {
             <Text style={styles.input}>
               Select Date:
             </Text>
-            
+            {/* DAte start Here */}
             <TouchableOpacity onPress={() => setShowStartDatePicker(true)} style={styles.date}> 
               <Text>{formattedDate} </Text>
             </TouchableOpacity>
@@ -93,32 +98,41 @@ const AddEvent = () => {
             <Text style={styles.input}>
               Select Time:
             </Text>
+
+            {/* StartTime StartHere */}
             
-            <TouchableOpacity onPress={() => setShowStartDatePicker(true)} style={styles.date}> 
+            <TouchableOpacity onPress={() => setShowStartTimePicker(true)} style={styles.date}> 
               <Text>{formattedDate} </Text>
             </TouchableOpacity>
 
-            
-
-            
-
-            <TouchableOpacity onPress={() => setShowStartDatePicker(true)} style={styles.date}> 
-              <Text>{formattedDate} </Text>
-            </TouchableOpacity>
-              
-          </View>
-
-          
-              
-          {showStartDatePicker && (
+            {showStartTimePicker && (
             <DateTimePicker
               value={date}
-              mode="date"
+              mode="time"
               display="spinner"
               onChange={(event, date) => {
-                setShowStartDatePicker(false);
+                setShowStartTimePicker(false);
                 if (date) setStartDate(date);
               }}
+            />
+          )}
+
+            
+
+            
+          {/* EndTime StartHere */}
+          <TouchableOpacity onPress={() => setShowEndTimePicker(true)} style={styles.date}> 
+            <Text>{formattedDate} </Text>
+          </TouchableOpacity>
+              
+          </View>         
+          {showEndTimePicker && (
+            <DateTimePicker
+              value={date}
+              mode="time"
+              display="spinner"
+              
+              
             />
           )}
 
@@ -150,6 +164,19 @@ const AddEvent = () => {
       
     </View>
 
+
+    <View style={{flexDirection:"row",justifyContent:"space-between",padding:15}}>
+            
+            <TouchableOpacity style={{backgroundColor:"#EEEE",padding:8,borderRadius:5}}>
+            <Text style={{fontWeight:"bold"}} >Close</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity style={{backgroundColor:"#EEEE",padding:8,borderRadius:5}}>
+            <Text style={{fontWeight:"bold"}} >Add Event</Text>
+            </TouchableOpacity>
+            
+    </View>
+
     </View>
 
     
@@ -161,13 +188,18 @@ const AddEvent = () => {
 export default AddEvent
 
 const styles = StyleSheet.create({
+  lastButton:{
+    backgroundColor:"#EEEEEE",
+    borderRadius:5,
+    color:"black"
+  },
   container:{
     paddingHorizontal:"5%",
     backgroundColor:"#92A0AD",
     height:"100%",
     width:"100%",
     flex:1,
-    rowGap:12,
+    rowGap:25,
   },
   header:{
     marginTop:"5%",
