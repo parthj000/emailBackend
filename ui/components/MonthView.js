@@ -11,12 +11,18 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 const { width, height } = Dimensions.get("window");
 
-const fetchMonthEvents = async (setNext, setPrevious, obj, mode, setEvents) => {
+export const fetchMonthEvents = async (
+  setNext,
+  setPrevious,
+  obj,
+  mode,
+  setEvents
+) => {
   try {
     var request;
-    console.log(obj, "this is the object");
+
     const token = await AsyncStorage.getItem("token");
-    console.log(token);
+
     const baseurl = `${process.env.BACKEND_URI}/api/events?token=${token}`;
 
     if (JSON.stringify(obj) !== "{}") {
@@ -24,14 +30,15 @@ const fetchMonthEvents = async (setNext, setPrevious, obj, mode, setEvents) => {
       let end = obj.endDate;
       request = `${baseurl}&startDate=${start}&endDate=${end}&mode=${mode}`;
     } else {
-      console.log("tis ");
       request = `${baseurl}&mode=${mode}`;
     }
-    console.log(request);
+    console.log(
+      request,
+      "this is the request -------------------------------------------------------------------------"
+    );
 
     const res = await fetch(request);
     const data = await res.json();
-    console.log(data);
 
     setNext({
       startDate: data.next.startDate,
@@ -42,14 +49,12 @@ const fetchMonthEvents = async (setNext, setPrevious, obj, mode, setEvents) => {
       endDate: data.prev.endDate,
     });
     setEvents(doEventsStructuring(data.events));
-
-    console.log(data.events);
   } catch (err) {
-    console.log(err);
+    console.error(err);
   }
 };
 
-function doEventsStructuring(events) {
+export function doEventsStructuring(events) {
   if (!events) {
     return [];
   }
@@ -62,7 +67,7 @@ function doEventsStructuring(events) {
     };
     newArr.push(obj);
   }
-  console.log(newArr, "this is the newArr");
+
   return newArr;
 }
 
@@ -70,27 +75,13 @@ const MonthView = () => {
   const { view, setView, currentDate, setCurrentDate, month, setMonth } =
     useContext(CalendarContext);
   const [newEvents, setEvents] = useState([]);
-  const [swipeDirection, setSwipeDirection] = useState("");
   const [previous, setPrevious] = useState({});
   const [next, setNext] = useState({});
 
   useEffect(() => {
     setMonth(dayjs(currentDate).month());
-    fetchMonthEvents(setNext, setPrevious, {}, "M", setEvents).then(
-      console.log(newEvents, "wowoowo")
-    );
+    fetchMonthEvents(setNext, setPrevious, {}, "M", setEvents);
   }, []);
-
-  // const onright = async () => {
-  //   fetchMonthEvents(setNext, setPrevious, previous, "M").then(
-  //     console.log(next + "this is next dates" + previous)
-  //   );
-  //   console.log("right----------------------------");
-  // };
-  // const onleft = async () => {
-  //   fetchMonthEvents(setNext, setPrevious, next, "M");
-  //   console.log("left");
-  // };
 
   const handleGesture = ({ nativeEvent }) => {
     if (nativeEvent.state === State.END) {
@@ -108,7 +99,6 @@ const MonthView = () => {
   const handleCell = (date) => {
     setView("day");
     setCurrentDate(date);
-    console.log(date);
   };
 
   const onSwipeLeft = () => {
@@ -125,7 +115,6 @@ const MonthView = () => {
   };
 
   return (
-
     <GestureHandlerRootView style={{ flex: 1 }}>
       <View style={styles.container}>
         <Calendar
@@ -145,7 +134,6 @@ const MonthView = () => {
         </View>
       </View>
     </GestureHandlerRootView>
-
   );
 };
 
