@@ -41,10 +41,7 @@ export const fetchMonthEvents = async (
 
     const res = await fetch(request);
     const data = await res.json();
-<<<<<<< HEAD
-=======
     
->>>>>>> dca086d (request for add event and task  complete)
 
     setNext({
       startDate: data.next.startDate,
@@ -55,11 +52,8 @@ export const fetchMonthEvents = async (
       endDate: data.prev.endDate,
     });
     setEvents(doEventsStructuring(data.events));
-<<<<<<< HEAD
-=======
 
 
->>>>>>> dca086d (request for add event and task  complete)
   } catch (err) {
     console.error(err);
   }
@@ -78,11 +72,7 @@ export function doEventsStructuring(events) {
     };
     newArr.push(obj);
   }
-<<<<<<< HEAD
-
-=======
   
->>>>>>> dca086d (request for add event and task  complete)
   return newArr;
 }
 
@@ -95,13 +85,9 @@ const MonthView = () => {
 
   useEffect(() => {
     setMonth(dayjs(currentDate).month());
-<<<<<<< HEAD
-    fetchMonthEvents(setNext, setPrevious, {}, "M", setEvents);
-=======
     fetchMonthEvents(setNext, setPrevious, {}, "M", setEvents).then(
       
     );
->>>>>>> dca086d (request for add event and task  complete)
   }, []);
 
   const handleGesture = ({ nativeEvent }) => {

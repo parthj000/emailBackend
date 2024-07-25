@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import {
   StyleSheet,
   Text,
@@ -22,24 +21,6 @@ const AddTask = () => {
     { label: "Daily", value: "D" },
     { label: "Weekly", value: "W" },
     { label: "Monthly", value: "M" },
-=======
-import { StyleSheet, Text, View, StatusBar, TextInput, TouchableOpacity } from 'react-native';
-import React, { useState } from 'react';
-import DateTimePicker from '@react-native-community/datetimepicker';
-import Divider from "../components/Divder"; 
-import { Dropdown } from 'react-native-element-dropdown';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import Toast from 'react-native-toast-message';
-import { router } from 'expo-router';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
-const AddTask = () => {
-  const data = [
-    { label: 'No Repeat', value: 'N' },
-    { label: 'Daily', value: 'D' },
-    { label: 'Weekly', value: 'W' },
-    { label: 'Monthly', value: 'D' },
->>>>>>> dca086d (request for add event and task  complete)
   ];
 
   const [date, setDate] = useState(new Date());
@@ -65,29 +46,6 @@ const AddTask = () => {
     console.log(data);
     try {
       const token = await AsyncStorage.getItem("token");
-<<<<<<< HEAD
-      const request = await fetch(`${process.env.BACKEND_URI}/api/events`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          token: token,
-          startDate: startTime.valueOf(),
-          endDate: endTime.valueOf(),
-          title: firstInput,
-          description: secondInput,
-          recurrence: selectedValue,
-          category: "E",
-        }),
-      });
-      const res = await request.json();
-      if (request.ok) {
-        Toast.show({
-          type: "success",
-          text1: "Event created succesfully",
-        });
-=======
       console.log(token)
       const request = await fetch(`${process.env.BACKEND_URI}/api/events`,{
         method:"POST",
@@ -115,7 +73,6 @@ const AddTask = () => {
           text1:"Task created succesfully",
 
         })
->>>>>>> dca086d (request for add event and task  complete)
 
         // router.push("calendar")
       }
@@ -138,13 +95,9 @@ const AddTask = () => {
       <StatusBar barStyle="dark-content" backgroundColor="#92A0AD" />
       <View style={styles.container}>
         <View>
-<<<<<<< HEAD
-          <Text style={styles.header}>Add Event</Text>
-=======
         
           <Text style={styles.header}>Add Task</Text>
 
->>>>>>> dca086d (request for add event and task  complete)
         </View>
 
         <View style={styles.second}>
@@ -233,18 +186,8 @@ const AddTask = () => {
               />
             )}
 
-<<<<<<< HEAD
-            <View></View>
-            <TouchableOpacity
-              onPress={() => setShowEndTimePicker(true)}
-              style={styles.date}
-            >
-              <Text>{endTime.toLocaleTimeString()}</Text>
-            </TouchableOpacity>
-=======
 
             
->>>>>>> dca086d (request for add event and task  complete)
           </View>
 
           {showEndTimePicker && (
