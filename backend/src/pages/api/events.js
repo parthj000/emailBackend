@@ -212,8 +212,7 @@ function generateOccurrences(event, startDate, endDate) {
   const endDateTs = moment(endDate);
 
   while (current.isBefore(end) && current.isBefore(endDateTs*1000)) {
-    console.log('infinited');
-    if (current.isAfter(startDate) && matchesRecurrence(current, event.recurrence)) {
+    if (current.isAfter(startDate) && matchesRecurrence(current, event)) {
       const occurrence = {
         ...event,
         startDate: current.unix(),
@@ -228,12 +227,15 @@ function generateOccurrences(event, startDate, endDate) {
   return occurrences;
 }
 
-function matchesRecurrence(current, recurrence) {
-  console.log(current, recurrence);
-  if (recurrence === DAY) {
+function matchesRecurrence(current, event) {
+  console.log(current.date(), moment(event.startDate*1000).date());
+  if (event.recurrence === DAY) {
     return true;
+  } else if (event.recurrence == WEEK) {
+    return moment(event.startDate*1000).format('ddd') === current.format('ddd');
+  } else if (event.recurrence == MONTH) {
+    return moment(event.startDate*1000).date() === current.date();  
   }
-  // Add logic for 'daily' and 'monthly' as needed
   return true;
 }
 
