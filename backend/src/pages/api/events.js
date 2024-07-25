@@ -14,6 +14,7 @@ dayjs.extend(advancedFormat);
 const DAY = 'D';
 const WEEK = 'W';
 const MONTH = 'M';
+const NO_REPEAT = 'N';
 
 export default async function handler(req, res) {
   const { method } = req;
@@ -22,11 +23,11 @@ export default async function handler(req, res) {
     return res.status(405).json({ message: "Method not allowed" });
   }
 
-  const token = req.headers["x-auth-token"];
-  // const token = method === "GET" ? req.query.token : req.body.token;
-  // if (!token) {
-  //   return res.status(401).json({ message: "Missing or invalid token" });
-  // }
+  //const token = req.headers["x-auth-token"];
+  const token = method === "GET" ? req.query.token : req.body.token;
+  if (!token) {
+    return res.status(401).json({ message: "Missing or invalid token" });
+  }
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -41,8 +42,8 @@ export default async function handler(req, res) {
         return res.status(400).json({ message: "All fields are required" });
       }
 
-      const startDateTimestamp = Math.floor(new Date(startDate).getTime());
-      const endDateTimestamp = Math.floor(new Date(endDate).getTime());
+      const startDateTimestamp = Math.floor(new Date(startDate).getTime()/1000);
+      const endDateTimestamp = Math.floor(new Date(endDate).getTime()/1000);
 
       if (isNaN(startDateTimestamp)) {
         return res.status(400).json({ message: "Invalid startDate format" });
@@ -67,8 +68,10 @@ export default async function handler(req, res) {
       const { mode, startDate, endDate } = req.query;
       let startTimestamp, endTimestamp, prevStart, prevEnd, nextStart, nextEnd;
       let startDayjs, endDayjs;
+      let havedates = false, type = "day";
       
       if (startDate && endDate) {
+        havedates = true;
         startDayjs = dayjs.unix(parseInt(startDate));
         endDayjs = dayjs.unix(parseInt(endDate));
       } else {
@@ -92,22 +95,28 @@ export default async function handler(req, res) {
             prevEnd = startDayjs.subtract(1, "week").endOf("week").unix();
             nextStart = startDayjs.add(1, "week").startOf("week").unix();
             nextEnd = startDayjs.add(1, "week").endOf("week").unix();
-            startTimestamp = startDayjs.startOf("week").unix();
-            endTimestamp = startDayjs.endOf("week").unix();
+            type = "week";
             break;
           case MONTH:
             prevStart = startDayjs.subtract(1, "month").startOf("month").unix();
             prevEnd = startDayjs.subtract(1, "month").endOf("month").unix();
             nextStart = startDayjs.add(1, "month").startOf("month").unix();
             nextEnd = startDayjs.add(1, "month").endOf("month").unix();
-            startTimestamp = startDayjs.startOf("month").unix();
-            endTimestamp = startDayjs.endOf("month").unix();
+            type = "month";
             break;
           default:
             return res.status(400).json({ message: "Invalid mode" });
         }
       } else {
         return res.status(400).json({ message: "Mode is required" });
+      }
+
+      if (havedates) {
+        startTimestamp = startDayjs.unix();
+        endTimestamp = endDayjs.unix();  
+      } else {
+        startTimestamp = startDayjs.startOf(type).unix();
+        endTimestamp = startDayjs.endOf(type).unix();          
       }
       
       let allEvents = [];
@@ -201,18 +210,19 @@ function isWithinDateRange(start, end, rangeStart, rangeEnd) {
 }
 
 function generateOccurrences(event, startDate, endDate) {
-  // console.log(event, startDate, endDate);
-  // if (!event.is_recurring) {
-  //   return [event];
-  // }
+  console.log(event, startDate, endDate);
+  if (event.recurrence == NO_REPEAT) {
+    return [event];
+  }
 
   const occurrences = [];
+  console.log(startDate);
   let current = moment(event.startDate*1000);
   const end = moment(endDate*1000);
-  const endDateTs = moment(endDate);
-
-  while (current.isBefore(end) && current.isBefore(endDateTs*1000)) {
-    if (current.isAfter(startDate) && matchesRecurrence(current, event)) {
+  const startDateTs = moment(startDate*1000);
+  while (current.isBefore(end)) {
+    console.log(current, end,startDateTs, current.isSameOrAfter(startDateTs));
+    if (current.isSameOrAfter(startDateTs) && matchesRecurrence(current, event)) {
       const occurrence = {
         ...event,
         startDate: current.unix(),
@@ -236,4 +246,3 @@ function matchesRecurrence(current, event) {
     return moment(event.startDate*1000).date() === current.date();  
   }
 }
-
