@@ -30,7 +30,7 @@ const FloatButton = () => {
   const handlePress = (name) => {
     if (name === 'add_event') {
       
-      router.push("addtask")
+      router.push("addtask");
 
     } else if (name === 'add_task') {
       // Handle add task action
