@@ -19,7 +19,7 @@ const AddEvent = () => {
   const [date,setDate] = useState(new Date());
   const [startTime,setStartTime] = useState(new Date());
   const [endTime,setEndTime] = useState(new Date());
-  const [selectedValue, setSelectedValue] = useState('no_repeat');
+  const [selectedValue, setSelectedValue] = useState('N');
   const [showStartDatePicker, setShowStartDatePicker] = useState(false);
   const [showStartTimePicker, setShowStartTimePicker] = useState(false);
   const [showEndTimePicker, setShowEndTimePicker] = useState(false);
@@ -212,11 +212,13 @@ const AddEvent = () => {
           <View style={{ flexDirection: "row", alignItems: "center", justifyContent: "space-between" }}>
             <Text style={styles.label}>Repeat</Text>
             <Dropdown
+              
               style={styles.dropdown}
               data={data}
               labelField="label"
               valueField="value"
               value={selectedValue}
+              
               onChange={item => {
                 setSelectedValue(item.value);
               }}

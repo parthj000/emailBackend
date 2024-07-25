@@ -1,7 +1,8 @@
 import React, { useContext, useState } from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import { CalendarContext } from "./CalendarContext";
 import { Divider } from "react-native-paper";
+import { Dropdown } from "react-native-element-dropdown";
 
 const Header = () => {
   const {
@@ -13,6 +14,7 @@ const Header = () => {
     month,
     setMonth,
   } = useContext(CalendarContext);
+  const [selectedValue, setSelectedValue] = useState("month");
 
   const monthMap = {
     0: "January",
@@ -29,12 +31,15 @@ const Header = () => {
     11: "December",
   };
 
+  const data = [
+    { label: "Daily", value: "day" },
+    { label: "Weekly", value: "week" },
+    { label: "Monthly", value: "month" },
+  ];
+
   return (
     <>
       <View style={styles.headerContainer}>
-
-
-        
         <View
           style={{
             flexDirection: "row",
@@ -44,62 +49,18 @@ const Header = () => {
           }}
         >
           <Text style={styles.dateText}>{monthMap[month]}</Text>
-          <TouchableOpacity
-            style={{
-              backgroundColor: "transparent",
-              padding: 7,
-              borderRadius: 4,
-              backgroundColor: "#C8D5E1",
-              borderRadius: 5,
+          <Dropdown
+            style={styles.dropdown}
+            data={data}
+            labelField="label"
+            valueField="value"
+            value={selectedValue}
+            onChange={(item) => {
+              setSelectedValue(item.value);
+              setView(item.value); // Update the view based on the selected value
             }}
-            onPress={() => {
-              setHeaderVisible(!headerVisible);
-            }}
-          >
-            <Text style={{ color: "black" }}>View</Text>
-          </TouchableOpacity>
+          />
         </View>
-
-        {headerVisible && (
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity
-              style={[styles.button, view === "month" && styles.activeButton]}
-              onPress={() => setView("month")}
-            >
-              <Text
-                style={[
-                  styles.buttonText,
-                  view === "month" && styles.activeText,
-                ]}
-              >
-                Month View
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.button, view === "week" && styles.activeButton]}
-              onPress={() => setView("week")}
-            >
-              <Text
-                style={[
-                  styles.buttonText,
-                  view === "week" && styles.activeText,
-                ]}
-              >
-                Week View
-              </Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.button, view === "day" && styles.activeButton]}
-              onPress={() => setView("day")}
-            >
-              <Text
-                style={[styles.buttonText, view === "day" && styles.activeText]}
-              >
-                Day View
-              </Text>
-            </TouchableOpacity>
-          </View>
-        )}
       </View>
       <Divider />
     </>
@@ -114,28 +75,10 @@ const styles = StyleSheet.create({
   dateText: {
     fontSize: 18,
   },
-  buttonContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginTop: 10,
-    paddingHorizontal: 10,
-  },
-  activeText: {
-    color: "black",
-  },
-  button: {
-    padding: 7,
-    borderColor: "#C8D5E1",
-
-    borderWidth: 1,
-    borderRadius: 5,
-  },
-  activeButton: {
-    backgroundColor: "#C8D5E1",
-  },
-  buttonText: {
-    color: "black",
-    fontSize: 13,
+  dropdown: {
+    width:"30%",
+    marginLeft: 10,
+    
   },
 });
 

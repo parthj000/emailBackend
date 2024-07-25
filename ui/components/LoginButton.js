@@ -26,7 +26,7 @@ async function logIn2(email, password, setLoading) {
     const data = await res.json();
     console.log(data);
     if (res.ok) {
-      console.log(data.token);
+      console.log(data.token +"login token here ---------------------------------");
       await AsyncStorage.setItem("token", data.token);
       setLoading(false);
       router.push("/welcome");

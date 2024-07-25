@@ -23,15 +23,15 @@ export const fetchMonthEvents = async (
 
     const token = await AsyncStorage.getItem("token");
 
-    const baseurl = `${process.env.BACKEND_URI}/api/events?token=${token}`;
+    const baseurl = `${process.env.BACKEND_URI}/api/events`;
 
     if (JSON.stringify(obj) !== "{}") {
       let start = obj.startDate;
       let end = obj.endDate;
-      request = `${baseurl}&startDate=${start}&endDate=${end}&mode=${mode}`;
+      request = `${baseurl}?startDate=${start}&endDate=${end}&mode=${mode}`;
       console.log(request)
     } else {
-      request = `${baseurl}&mode=${mode}`;
+      request = `${baseurl}?mode=${mode}`;
       
     }
     console.log(
@@ -39,7 +39,16 @@ export const fetchMonthEvents = async (
       "this is the request -------------------------------------------------------------------------"
     );
 
-    const res = await fetch(request);
+    const res = await fetch(request,
+      {
+        method:"GET",
+        headers:{
+          "authorization":`Bearer ${token}` ,
+          "Content-Type":'application/json'
+        }
+      }
+      
+    );
     const data = await res.json();
     
 
