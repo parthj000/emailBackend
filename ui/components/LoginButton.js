@@ -85,14 +85,15 @@ export default LoginButton;
 const styles = StyleSheet.create({
   signUpButton: {
     width: "100%",
-    backgroundColor: "#007BFF",
+    backgroundColor: "#E1E1E1",
     padding: 12,
     marginTop: 15,
     alignItems: "center",
     borderRadius: 10,
+    
   },
   signUpButtonText: {
-    color: "white",
+    color: "black",
     fontWeight: "bold",
   },
 });

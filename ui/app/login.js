@@ -1,6 +1,7 @@
 import { Link, router, useRouter } from "expo-router";
 import React, { useContext, useEffect, useState } from "react";
 import {
+  StatusBar,
   View,
   TextInput,
   StyleSheet,
@@ -40,6 +41,7 @@ export default function Login() {
     <>
       <Toast />
       <View style={styles.container}>
+      <StatusBar barStyle="dark-content" backgroundColor="#92A0AD" />
         {/* <Image source={require("../assets/in.jpg")} style={styles.image} /> */}
         <Text
           style={{
@@ -88,7 +90,7 @@ export default function Login() {
 
         <Text style={styles.optionText}>
           Don't have an account?{" "}
-          <Link href="/signup" style={{ color: "blue" }}>
+          <Link href="/signup" style={{ color: "black" }}>
             Sign Up
           </Link>
         </Text>
@@ -103,12 +105,15 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: 30,
+    backgroundColor:"#92A0AD",
     gap: 12,
   },
   input: {
     height: 40,
-    borderColor: "rgb(219 217 217)",
+    borderColor: "black",
     borderWidth: 1,
+    
+    fontWeight:"bold",
 
     padding: 12,
     borderRadius: 9,
@@ -145,7 +150,7 @@ const styles = StyleSheet.create({
     margin: 0,
   },
   error: {
-    color: "red",
+    color: "black",
     fontSize: 12,
     fontStyle: "italic",
     paddingHorizontal: 10,

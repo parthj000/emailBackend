@@ -32,6 +32,9 @@ const Header = () => {
   return (
     <>
       <View style={styles.headerContainer}>
+
+
+        
         <View
           style={{
             flexDirection: "row",
@@ -44,7 +47,7 @@ const Header = () => {
           <TouchableOpacity
             style={{
               backgroundColor: "transparent",
-              padding: 4,
+              padding: 7,
               borderRadius: 4,
               backgroundColor: "#C8D5E1",
               borderRadius: 5,
