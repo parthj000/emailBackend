@@ -228,7 +228,6 @@ function generateOccurrences(event, startDate, endDate) {
 }
 
 function matchesRecurrence(current, event) {
-  console.log(current.date(), moment(event.startDate*1000).date());
   if (event.recurrence === DAY) {
     return true;
   } else if (event.recurrence == WEEK) {
@@ -236,6 +235,5 @@ function matchesRecurrence(current, event) {
   } else if (event.recurrence == MONTH) {
     return moment(event.startDate*1000).date() === current.date();  
   }
-  return true;
 }
 
