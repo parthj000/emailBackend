@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { View, StyleSheet, Dimensions, Text } from "react-native";
+import { View, StyleSheet, Dimensions, Text,ActivityIndicator } from "react-native";
 import { Calendar } from "react-native-big-calendar";
 import { CalendarContext } from "./CalendarContext";
 import dayjs from "dayjs";
@@ -11,14 +11,17 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 const { width, height } = Dimensions.get("window");
 
+
 export const fetchMonthEvents = async (
   setNext,
   setPrevious,
   obj,
   mode,
-  setEvents
+  setEvents,
+  setLoading
 ) => {
   try {
+    setLoading(true)
     var request;
 
     const token = await AsyncStorage.getItem("token");
@@ -61,6 +64,7 @@ export const fetchMonthEvents = async (
       endDate: data.prev.endDate,
     });
     setEvents(doEventsStructuring(data.events));
+    setLoading(false)
 
 
   } catch (err) {
@@ -91,12 +95,16 @@ const MonthView = () => {
   const [newEvents, setEvents] = useState([]);
   const [previous, setPrevious] = useState({});
   const [next, setNext] = useState({});
+  const [loading, setLoading] = useState(false);
+  
 
   useEffect(() => {
     setMonth(dayjs(currentDate).month());
-    fetchMonthEvents(setNext, setPrevious, {}, "M", setEvents).then(
-      
+    fetchMonthEvents(setNext, setPrevious, {}, "M", setEvents,setLoading).then(
+      setLoading(false)
     );
+
+
   }, []);
 
   const handleGesture = ({ nativeEvent }) => {
@@ -121,35 +129,47 @@ const MonthView = () => {
     console.log("Left----------------");
 
     setCurrentDate(dayjs(currentDate).add(1, "month").toDate());
-    fetchMonthEvents(setNext, setPrevious, next, "M", setEvents);
+    fetchMonthEvents(setNext, setPrevious, next, "M", setEvents,setLoading);
   };
 
   const onSwipeRight = () => {
     console.log("right----------------------------");
     setCurrentDate(dayjs(currentDate).subtract(1, "month").toDate());
-    fetchMonthEvents(setNext, setPrevious, previous, "M", setEvents);
+    fetchMonthEvents(setNext, setPrevious, previous, "M", setEvents,setLoading);
   };
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <View style={styles.container}>
-        <Calendar
-          events={newEvents} // Add your events here
-          height={height}
-          width={width}
-          mode="month"
-          date={currentDate}
-        />
-        <View style={styles.overlayContainer}>
-          <PanGestureHandler onHandlerStateChange={handleGesture}>
-            <View style={styles.leftHalf}></View>
-          </PanGestureHandler>
-          <PanGestureHandler onHandlerStateChange={handleGesture}>
-            <View style={styles.rightHalf}></View>
-          </PanGestureHandler>
-        </View>
+    <>
+
+    {loading ? (
+      <View style={{flex:1,alignItems:"center",justifyContent:"center"}}>
+      <ActivityIndicator size="large" color="grey" />
       </View>
-    </GestureHandlerRootView>
+    ):<GestureHandlerRootView style={{ flex: 1 }}>
+    <View style={styles.container}>
+      
+      <Calendar
+        events={newEvents} // Add your events here
+        height={height}
+        width={width}
+        mode="month"
+        date={currentDate}
+      />
+      <View style={styles.overlayContainer}>
+        <PanGestureHandler onHandlerStateChange={handleGesture}>
+          <View style={styles.leftHalf}></View>
+        </PanGestureHandler>
+        <PanGestureHandler onHandlerStateChange={handleGesture}>
+          <View style={styles.rightHalf}></View>
+        </PanGestureHandler>
+      </View>
+    </View>
+  </GestureHandlerRootView>}
+    
+    
+    
+
+    </>
   );
 };
 
@@ -172,5 +192,6 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent",
   },
 });
+
 
 export default MonthView;

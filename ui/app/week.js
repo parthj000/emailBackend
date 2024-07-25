@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from "react";
-import { View, StyleSheet, Dimensions } from "react-native";
+import { View, StyleSheet, Dimensions,ActivityIndicator } from "react-native";
 import {
   GestureHandlerRootView,
   PanGestureHandler,
@@ -20,13 +20,15 @@ const CustomWeeklyComponent = () => {
   const [newEvents, setEvents] = useState([]);
   const [previousweek, setPreviousweek] = useState({});
   const [nextweek, setNextweek] = useState({});
+  const [loading,setLoading]=useState(false);
 
   const [callOnce, setCallOnce] = useState(false);
 
   useEffect(() => {
     
     
-    fetchMonthEvents(setNextweek, setPreviousweek, {}, "W", setEvents);
+    fetchMonthEvents(setNextweek, setPreviousweek, {}, "W", setEvents,setLoading);
+
   }, []);
 
  
@@ -36,7 +38,7 @@ const CustomWeeklyComponent = () => {
   
   const onSwipeLeft = (nextweek) => {
     console.log("Swiped Left");
-    fetchMonthEvents(setNextweek, setPreviousweek, nextweek, "W", setEvents);
+    fetchMonthEvents(setNextweek, setPreviousweek, nextweek, "W", setEvents,setLoading);
     setCurrentDate(dayjs(currentDate).add(1, "week").toDate());
   };
 
@@ -47,7 +49,8 @@ const CustomWeeklyComponent = () => {
       setPreviousweek,
       previousweek,
       "W",
-      setEvents
+      setEvents,
+      setLoading
     );
     setCurrentDate(dayjs(currentDate).subtract(1, "week").toDate());
   };
@@ -75,6 +78,13 @@ const CustomWeeklyComponent = () => {
   );
 
   return (
+
+    <>
+    {loading ? (
+      <View style={{flex:1,alignItems:"center",justifyContent:"center"}}>
+      <ActivityIndicator size="large" color="grey" />
+      </View>
+    ):
     <GestureHandlerRootView style={{ flex: 1 }}>
       <View style={styles.container}>
         <PanGestureHandler
@@ -96,6 +106,9 @@ const CustomWeeklyComponent = () => {
         </PanGestureHandler>
       </View>
     </GestureHandlerRootView>
+  }
+
+  </>
   );
 };
 

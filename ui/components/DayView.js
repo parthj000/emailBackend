@@ -1,5 +1,5 @@
 import React, { useState ,useContext, useEffect} from 'react';
-import { View, StyleSheet, Dimensions } from 'react-native';
+import { View, StyleSheet, Dimensions,ActivityIndicator} from 'react-native';
 import { GestureHandlerRootView, PanGestureHandler, State } from 'react-native-gesture-handler';
 import { Calendar } from 'react-native-big-calendar';
 import { CalendarContext } from './CalendarContext';
@@ -15,10 +15,11 @@ const MyCalendarComponent = () => {
   const [newEvents, setEvents] = useState([]);
   const [previous, setPrevious] = useState({});
   const [next, setNext] = useState({});
+  const [loading,setLoading] =useState(false);
 
   useEffect( () => {
 
-    fetchMonthEvents(setNext, setPrevious, {}, "D", setEvents)
+    fetchMonthEvents(setNext, setPrevious, {}, "D", setEvents,setLoading)
   },[]
   );
 
@@ -27,7 +28,12 @@ const MyCalendarComponent = () => {
   if (view !== "day") return null;
 
   return (
-    
+    <>
+    {loading ? (
+      <View style={{flex:1,alignItems:"center",justifyContent:"center"}}>
+      <ActivityIndicator size="large" color="grey" />
+      </View>
+    ):
       <View style={styles.container}>
         <Calendar
           events={newEvents} // Add your events here
@@ -40,6 +46,9 @@ const MyCalendarComponent = () => {
         />
         
       </View>
+    }
+
+  </>
     
   );
 };
