@@ -5,6 +5,7 @@ import dayjs from "dayjs";
 import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
 import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
 import advancedFormat from "dayjs/plugin/advancedFormat";
+const moment = require('moment');
 
 dayjs.extend(isSameOrAfter);
 dayjs.extend(isSameOrBefore);
@@ -40,8 +41,8 @@ export default async function handler(req, res) {
         return res.status(400).json({ message: "All fields are required" });
       }
 
-      const startDateTimestamp = Math.floor(new Date(startDate).getTime()/1000);
-      const endDateTimestamp = Math.floor(new Date(endDate).getTime() /1000);
+      const startDateTimestamp = Math.floor(new Date(startDate).getTime());
+      const endDateTimestamp = Math.floor(new Date(endDate).getTime());
 
       if (isNaN(startDateTimestamp)) {
         return res.status(400).json({ message: "Invalid startDate format" });
@@ -109,16 +110,14 @@ export default async function handler(req, res) {
         return res.status(400).json({ message: "Mode is required" });
       }
       
-      const events = await eventsCollection
-        .find({
-          userId: decoded.userId,
-          startDate: { $lte: endTimestamp },
-          endDate: { $gte: startTimestamp },
-        })
-        .toArray();
+      let allEvents = [];
+      const events = await eventsCollection.find({
+        userId: decoded.userId,
+      }).toArray();
+      events.forEach(event => {
+        allEvents = allEvents.concat(generateOccurrences(event, startTimestamp, endTimestamp));
+      });
 
-      const allEvents = generateRecurringEvents(events, startTimestamp, endTimestamp);
-      
       return res.status(200).json({
         events: allEvents,
         prev: { startDate: prevStart, endDate: prevEnd },
@@ -137,15 +136,15 @@ function generateRecurringEvents(events, startTimestamp, endTimestamp) {
   events.forEach((event) => {
     const recurrence = event.recurrence;
 
-    if (recurrence === 'daily') {
+    if (recurrence === DAY) {
       const dailyEvent = { ...event };
       dailyEvent.startDate = startTimestamp;
       dailyEvent.endDate = endTimestamp;
       result.push(dailyEvent);
-    } else if (recurrence === 'weekly') {
+    } else if (recurrence === WEEK) {
       const weeklyEvents = generateWeeklyEvents(event, startTimestamp, endTimestamp);
       result.push(...weeklyEvents);
-    } else if (recurrence === 'monthly') {
+    } else if (recurrence === MONTH) {
       const monthlyEvents = generateMonthlyEvents(event, startTimestamp, endTimestamp);
       result.push(...monthlyEvents);
     }
@@ -200,3 +199,41 @@ function isWithinDateRange(start, end, rangeStart, rangeEnd) {
     (end >= rangeStart && end <= rangeEnd)
   );
 }
+
+function generateOccurrences(event, startDate, endDate) {
+  // console.log(event, startDate, endDate);
+  // if (!event.is_recurring) {
+  //   return [event];
+  // }
+
+  const occurrences = [];
+  let current = moment(event.startDate*1000);
+  const end = moment(endDate*1000);
+  const endDateTs = moment(endDate);
+
+  while (current.isBefore(end) && current.isBefore(endDateTs*1000)) {
+    console.log('infinited');
+    if (current.isAfter(startDate) && matchesRecurrence(current, event.recurrence)) {
+      const occurrence = {
+        ...event,
+        startDate: current.unix(),
+        endDate: moment(current).add(moment(event.endDate*1000).diff(moment(event.startDate*1000))).unix()
+      };
+      occurrences.push(occurrence);
+    }
+    const occur = event.recurrence == DAY ? "day" : event.recurrence == WEEK ? "week" : "month";
+    current.add(1, occur);
+  }
+
+  return occurrences;
+}
+
+function matchesRecurrence(current, recurrence) {
+  console.log(current, recurrence);
+  if (recurrence === DAY) {
+    return true;
+  }
+  // Add logic for 'daily' and 'monthly' as needed
+  return true;
+}
+
