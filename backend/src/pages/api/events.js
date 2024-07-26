@@ -23,9 +23,8 @@ export default async function handler(req, res) {
     return res.status(405).json({ message: "Method not allowed" });
   }
 
-  //const token = req.headers["x-auth-token"];
-  const token = method === "GET" ? req.query.token : req.body.token;
-  if (!token) {
+  const token = req.headers["x-auth-token"];
+ if (!token) {
     return res.status(401).json({ message: "Missing or invalid token" });
   }
 
@@ -65,6 +64,7 @@ export default async function handler(req, res) {
     }
 
     if (method === "GET") {
+      console.log('Insider Events Get');
       const { mode, startDate, endDate } = req.query;
       let startTimestamp, endTimestamp, prevStart, prevEnd, nextStart, nextEnd;
       let startDayjs, endDayjs;
@@ -137,76 +137,6 @@ export default async function handler(req, res) {
     console.error(error);
     return res.status(500).json({ message: "Internal server error" });
   }
-}
-
-function generateRecurringEvents(events, startTimestamp, endTimestamp) {
-  const result = [];
-
-  events.forEach((event) => {
-    const recurrence = event.recurrence;
-
-    if (recurrence === DAY) {
-      const dailyEvent = { ...event };
-      dailyEvent.startDate = startTimestamp;
-      dailyEvent.endDate = endTimestamp;
-      result.push(dailyEvent);
-    } else if (recurrence === WEEK) {
-      const weeklyEvents = generateWeeklyEvents(event, startTimestamp, endTimestamp);
-      result.push(...weeklyEvents);
-    } else if (recurrence === MONTH) {
-      const monthlyEvents = generateMonthlyEvents(event, startTimestamp, endTimestamp);
-      result.push(...monthlyEvents);
-    }
-  });
-
-  return result;
-}
-
-function generateWeeklyEvents(event, startTimestamp, endTimestamp) {
-  const weeklyEvents = [];
-  let currentStartDate = startTimestamp;
-
-  for (let i = 0; i < 7; i++) {
-    if (currentStartDate > endTimestamp) {
-      break;
-    }
-
-    const newEvent = { ...event };
-    newEvent.startDate = currentStartDate;
-    newEvent.endDate = Math.min(currentStartDate + 86399, endTimestamp); // Ensure end date is within limit
-    weeklyEvents.push(newEvent);
-
-    currentStartDate += 86400; // Move to the next day
-  }
-
-  return weeklyEvents;
-}
-
-function generateMonthlyEvents(event, startTimestamp, endTimestamp) {
-  const monthlyEvents = [];
-  let currentStartDate = startTimestamp;
-
-  for (let i = 0; i < 30; i++) {
-    if (currentStartDate > endTimestamp) {
-      break;
-    }
-
-    const newEvent = { ...event };
-    newEvent.startDate = currentStartDate;
-    newEvent.endDate = Math.min(currentStartDate + 86399, endTimestamp); // Ensure end date is within limit
-    monthlyEvents.push(newEvent);
-
-    currentStartDate += 86400; // Move to the next day
-  }
-
-  return monthlyEvents;
-}
-
-function isWithinDateRange(start, end, rangeStart, rangeEnd) {
-  return (
-    (start >= rangeStart && start <= rangeEnd) ||
-    (end >= rangeStart && end <= rangeEnd)
-  );
 }
 
 function generateOccurrences(event, startDate, endDate) {

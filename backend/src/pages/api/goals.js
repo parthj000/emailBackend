@@ -4,11 +4,9 @@ import { ObjectId } from 'mongodb';
 import jwt from 'jsonwebtoken';
 
 export default async (req, res) => {
+  const token = req.headers["x-auth-token"];
   if (req.method === 'POST') {
     // POST request handler
-
-    const token = req.headers["x-auth-token"];
-
     const  goalText  = req.body;
 
     // if (!token || !goalText) {
@@ -58,9 +56,6 @@ export default async (req, res) => {
       res.status(500).json({ message: 'Internal server error' });
     }
   } else if (req.method === 'GET') {
-    // GET request handler
-    const { token } = req.query;
-
     if (!token) {
       return res.status(400).json({ message: 'Token is required' });
     }
