@@ -37,8 +37,16 @@ export default function WelcomePage() {
 
       if (token) {
         setToken(token);
+        console.log(token +"this token in goal context -----------------------")
         const res = await fetch(
-          `${process.env.BACKEND_URI}/api/goals?token=${token}`
+          `${process.env.BACKEND_URI}/api/goals`,
+          {
+            method:"GET",
+            headers:{
+              "authorization":`Bearer ${token}` ,
+              "Content-Type":'application/json'
+            }
+          }
         );
         const data = await res.json();
 
@@ -61,12 +69,13 @@ export default function WelcomePage() {
           setLoading(false);
           return;
         }
-        console.log(res, data);
+        console.log( data +"data herer ---------------------------");
         await AsyncStorage.removeItem("token");
         console.log(data);
         throw new Error("something went wrong");
       }
-      throw new Error("user is not authorized");
+      // throw new Error("user is not authorized");
+      
     } catch (error) {
       if (error.message === "Network request failed") {
         console.log(error);

@@ -1,55 +1,121 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useCallback, useEffect } from "react";
+import { View, StyleSheet, Dimensions,ActivityIndicator } from "react-native";
 import {
-  View,
-  StyleSheet,
-  Dimensions,
-  FlatList,
-  Text,
-  TouchableOpacity,
-} from "react-native";
-import { CalendarContext } from "../components/CalendarContext";
-import { useContext } from "react";
+  GestureHandlerRootView,
+  PanGestureHandler,
+  State,
+} from "react-native-gesture-handler";
 import { Calendar } from "react-native-big-calendar";
+import dayjs from "dayjs";
+import { fetchMonthEvents } from "../components/MonthView";
+const { width, height } = Dimensions.get("window");
 
 
+const CustomWeeklyComponent = () => {
+  
 
-const { width } = Dimensions.get("window");
+  
 
-const CustomWeeklyCalendar = () =>{
+  const [currentDate, setCurrentDate] = useState(dayjs().toDate());
+  const [newEvents, setEvents] = useState([]);
+  const [previousweek, setPreviousweek] = useState({});
+  const [nextweek, setNextweek] = useState({});
+  const [loading,setLoading]=useState(false);
 
-  const events = [
-    {
-      title: 'Meeting with John',
-      start: new Date(2024, 6, 20, 10, 0),
-      end: new Date(2024, 6, 20, 11, 0),
-      color: 'blue',
-    },
-    {
-      title: 'Lunch with Sarah',
-      start: new Date(2024, 6, 21, 12, 0),
-      end: new Date(2024, 6, 21, 13, 0),
-      color: 'green',
-    },
-    // Add more events as needed
-  ];
+  const [callOnce, setCallOnce] = useState(false);
 
-  return(
-    <View >
-     
-      <Calendar
-        events={events}
-        height={700}
-        mode="week"
-        locale="en"
-      />
+  useEffect(() => {
+    
+    
+    fetchMonthEvents(setNextweek, setPreviousweek, {}, "W", setEvents,setLoading);
+
+  }, []);
+
+ 
+
+
+  
+  
+  const onSwipeLeft = (nextweek) => {
+    console.log("Swiped Left");
+    fetchMonthEvents(setNextweek, setPreviousweek, nextweek, "W", setEvents,setLoading);
+    setCurrentDate(dayjs(currentDate).add(1, "week").toDate());
+  };
+
+  const onSwipeRight = (previousweek) => {
+    console.log("Swiped Right");
+    fetchMonthEvents(
+      setNextweek,
+      setPreviousweek,
+      previousweek,
+      "W",
+      setEvents,
+      setLoading
+    );
+    setCurrentDate(dayjs(currentDate).subtract(1, "week").toDate());
+  };
+
+  const handleGesture = useCallback(
+    ({ nativeEvent }) => {
       
-    </View>
+      if (nativeEvent.state === State.END) {
+        const { translationX, translationY } = nativeEvent;
+        if (
+          Math.abs(translationX) > Math.abs(translationY) &&
+          Math.abs(translationX) > 30
+        ) {
+          if (translationX < 0) {
+            
+            onSwipeLeft(nextweek);
+          } else if (translationX > 0) {
+            
+            onSwipeRight(previousweek);
+          }
+        }
+      }
+    },
+    [currentDate, previousweek, nextweek]
+  );
+
+  return (
+
+    <>
+    {loading ? (
+      <View style={{flex:1,alignItems:"center",justifyContent:"center"}}>
+      <ActivityIndicator size="large" color="grey" />
+      </View>
+    ):
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <View style={styles.container}>
+        <PanGestureHandler
+          onGestureEvent={handleGesture}
+          onHandlerStateChange={handleGesture}
+          activeOffsetX={[-10, 10]} // Recognize horizontal swipes
+          activeOffsetY={[-20, 20]} // Allow vertical scrolling to pass through
+        >
+          <View style={{ flex: 1 }}>
+            <Calendar
+              events={newEvents}
+              height={height}
+              width={width}
+              mode="week"
+              swipeEnabled={true}
+              date={currentDate}
+            />
+          </View>
+        </PanGestureHandler>
+      </View>
+    </GestureHandlerRootView>
+  }
+
+  </>
   );
 };
 
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+});
 
-const style = StyleSheet.create({
-
-})
-
-export default CustomWeeklyCalendar;
+export default CustomWeeklyComponent;

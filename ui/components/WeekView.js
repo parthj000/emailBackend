@@ -12,7 +12,6 @@ const WeekView = () => {
   return (
     <View style={styles.weekView}>
       <CustomWeeklyCalendar />
-      
     </View>
   );
 };
