@@ -3,7 +3,7 @@ import React, { createContext, useState } from "react";
 const CalendarContext = createContext();
 
 const CalendarProvider = ({ children }) => {
-  const [view, setView] = useState("week");
+  const [view, setView] = useState("month");
   const [modalVisible, setModalVisible] = useState(false);
   const [headerVisible, setHeaderVisible] = useState(false);
   const [month, setMonth] = useState(null);

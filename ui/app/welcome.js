@@ -12,7 +12,6 @@ import {
   ImageBackground,
   StatusBar,
   ActivityIndicator,
-  
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Buffer } from "buffer";
@@ -37,45 +36,30 @@ export default function WelcomePage() {
 
       if (token) {
         setToken(token);
-        console.log(token +"this token in goal context -----------------------")
-        const res = await fetch(
-          `${process.env.BACKEND_URI}/api/goals`,
-          {
-            method:"GET",
-            headers:{
-              "authorization":`Bearer ${token}` ,
-              "Content-Type":'application/json'
-            }
-          }
+        console.log(
+          token + "this token in goal context -----------------------"
         );
+        const res = await fetch(`${process.env.BACKEND_URI}/api/goals`, {
+          method: "GET",
+          headers: {
+            authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
         const data = await res.json();
 
         if (res.ok) {
-          if (data.goals[0]) {
-            console.log(data.goals);
-            setGoal(data.goals[0].goalText);
-            setName(data.goals[0].username);
-            setLoading(false);
-            return;
-          }
-          console.log(token);
-          const decodedData = Buffer.from(
-            token.split(".")[1],
-            "base64"
-          ).toString("utf-8");
-
-          setGoal("set your goal !");
-          setName(JSON.parse(decodedData).email);
+          data.goalText ? setGoal(data.goalText) : setGoal("set your goal");
+          setName(data.username);
           setLoading(false);
           return;
         }
-        console.log( data +"data herer ---------------------------");
+        console.log(data + "data herer ---------------------------");
         await AsyncStorage.removeItem("token");
         console.log(data);
         throw new Error("something went wrong");
       }
-      // throw new Error("user is not authorized");
-      
+      throw new Error("user is not authorized");
     } catch (error) {
       if (error.message === "Network request failed") {
         console.log(error);
@@ -102,6 +86,7 @@ export default function WelcomePage() {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          authorization: `Bearer ${Token}`,
         },
         body: JSON.stringify({
           token: Token,
@@ -277,7 +262,6 @@ export default function WelcomePage() {
 
       <Modal
         visible={modalVisible}
-        
         onDismiss={() => {
           setSuccess(false);
           setModalVisible(false);

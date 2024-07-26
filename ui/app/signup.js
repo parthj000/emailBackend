@@ -33,7 +33,9 @@ export default function SignUpPage() {
 
   return (
     <>
-      <Toast />
+      <View style={{ position: "relative", zIndex: 78, width: "100%" }}>
+        <Toast />
+      </View>
       <View style={styles.container}>
         {/* <Image source={require("../assets/up.jpg")} style={styles.image} /> */}
 
