@@ -6,11 +6,14 @@ import jwt from 'jsonwebtoken';
 export default async (req, res) => {
   if (req.method === 'POST') {
     // POST request handler
-    const { token, goalText } = req.body;
 
-    if (!token || !goalText) {
-      return res.status(400).json({ message: 'Token and goalText are required' });
-    }
+    const token = req.headers["x-auth-token"];
+
+    const  goalText  = req.body;
+
+    // if (!token || !goalText) {
+    //   return res.status(400).json({ message: 'Token and goalText are required' });
+    // }
 
     try {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -56,7 +59,7 @@ export default async (req, res) => {
     }
   } else if (req.method === 'GET') {
     // GET request handler
-    const { token } = req.body;
+    const { token } = req.query;
 
     if (!token) {
       return res.status(400).json({ message: 'Token is required' });
