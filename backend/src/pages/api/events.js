@@ -5,6 +5,7 @@ import dayjs from "dayjs";
 import isSameOrAfter from "dayjs/plugin/isSameOrAfter";
 import isSameOrBefore from "dayjs/plugin/isSameOrBefore";
 import advancedFormat from "dayjs/plugin/advancedFormat";
+const moment = require('moment');
 
 dayjs.extend(isSameOrAfter);
 dayjs.extend(isSameOrBefore);
@@ -13,6 +14,7 @@ dayjs.extend(advancedFormat);
 const DAY = 'D';
 const WEEK = 'W';
 const MONTH = 'M';
+const NO_REPEAT = 'N';
 
 export default async function handler(req, res) {
   const { method } = req;
@@ -21,11 +23,11 @@ export default async function handler(req, res) {
     return res.status(405).json({ message: "Method not allowed" });
   }
 
-  const token = req.headers["x-auth-token"];
-  // const token = method === "GET" ? req.query.token : req.body.token;
-  // if (!token) {
-  //   return res.status(401).json({ message: "Missing or invalid token" });
-  // }
+  //const token = req.headers["x-auth-token"];
+  const token = method === "GET" ? req.query.token : req.body.token;
+  if (!token) {
+    return res.status(401).json({ message: "Missing or invalid token" });
+  }
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -41,7 +43,7 @@ export default async function handler(req, res) {
       }
 
       const startDateTimestamp = Math.floor(new Date(startDate).getTime()/1000);
-      const endDateTimestamp = Math.floor(new Date(endDate).getTime() /1000);
+      const endDateTimestamp = Math.floor(new Date(endDate).getTime()/1000);
 
       if (isNaN(startDateTimestamp)) {
         return res.status(400).json({ message: "Invalid startDate format" });
@@ -66,8 +68,10 @@ export default async function handler(req, res) {
       const { mode, startDate, endDate } = req.query;
       let startTimestamp, endTimestamp, prevStart, prevEnd, nextStart, nextEnd;
       let startDayjs, endDayjs;
+      let havedates = false, type = "day";
       
       if (startDate && endDate) {
+        havedates = true;
         startDayjs = dayjs.unix(parseInt(startDate));
         endDayjs = dayjs.unix(parseInt(endDate));
       } else {
@@ -91,16 +95,14 @@ export default async function handler(req, res) {
             prevEnd = startDayjs.subtract(1, "week").endOf("week").unix();
             nextStart = startDayjs.add(1, "week").startOf("week").unix();
             nextEnd = startDayjs.add(1, "week").endOf("week").unix();
-            startTimestamp = startDayjs.startOf("week").unix();
-            endTimestamp = startDayjs.endOf("week").unix();
+            type = "week";
             break;
           case MONTH:
             prevStart = startDayjs.subtract(1, "month").startOf("month").unix();
             prevEnd = startDayjs.subtract(1, "month").endOf("month").unix();
             nextStart = startDayjs.add(1, "month").startOf("month").unix();
             nextEnd = startDayjs.add(1, "month").endOf("month").unix();
-            startTimestamp = startDayjs.startOf("month").unix();
-            endTimestamp = startDayjs.endOf("month").unix();
+            type = "month";
             break;
           default:
             return res.status(400).json({ message: "Invalid mode" });
@@ -108,17 +110,23 @@ export default async function handler(req, res) {
       } else {
         return res.status(400).json({ message: "Mode is required" });
       }
-      
-      const events = await eventsCollection
-        .find({
-          userId: decoded.userId,
-          startDate: { $lte: endTimestamp },
-          endDate: { $gte: startTimestamp },
-        })
-        .toArray();
 
-      const allEvents = generateRecurringEvents(events, startTimestamp, endTimestamp);
+      if (havedates) {
+        startTimestamp = startDayjs.unix();
+        endTimestamp = endDayjs.unix();  
+      } else {
+        startTimestamp = startDayjs.startOf(type).unix();
+        endTimestamp = startDayjs.endOf(type).unix();          
+      }
       
+      let allEvents = [];
+      const events = await eventsCollection.find({
+        userId: decoded.userId,
+      }).toArray();
+      events.forEach(event => {
+        allEvents = allEvents.concat(generateOccurrences(event, startTimestamp, endTimestamp));
+      });
+
       return res.status(200).json({
         events: allEvents,
         prev: { startDate: prevStart, endDate: prevEnd },
@@ -137,15 +145,15 @@ function generateRecurringEvents(events, startTimestamp, endTimestamp) {
   events.forEach((event) => {
     const recurrence = event.recurrence;
 
-    if (recurrence === 'daily') {
+    if (recurrence === DAY) {
       const dailyEvent = { ...event };
       dailyEvent.startDate = startTimestamp;
       dailyEvent.endDate = endTimestamp;
       result.push(dailyEvent);
-    } else if (recurrence === 'weekly') {
+    } else if (recurrence === WEEK) {
       const weeklyEvents = generateWeeklyEvents(event, startTimestamp, endTimestamp);
       result.push(...weeklyEvents);
-    } else if (recurrence === 'monthly') {
+    } else if (recurrence === MONTH) {
       const monthlyEvents = generateMonthlyEvents(event, startTimestamp, endTimestamp);
       result.push(...monthlyEvents);
     }
@@ -199,4 +207,42 @@ function isWithinDateRange(start, end, rangeStart, rangeEnd) {
     (start >= rangeStart && start <= rangeEnd) ||
     (end >= rangeStart && end <= rangeEnd)
   );
+}
+
+function generateOccurrences(event, startDate, endDate) {
+  console.log(event, startDate, endDate);
+  if (event.recurrence == NO_REPEAT) {
+    return [event];
+  }
+
+  const occurrences = [];
+  console.log(startDate);
+  let current = moment(event.startDate*1000);
+  const end = moment(endDate*1000);
+  const startDateTs = moment(startDate*1000);
+  while (current.isBefore(end)) {
+    console.log(current, end,startDateTs, current.isSameOrAfter(startDateTs));
+    if (current.isSameOrAfter(startDateTs) && matchesRecurrence(current, event)) {
+      const occurrence = {
+        ...event,
+        startDate: current.unix(),
+        endDate: moment(current).add(moment(event.endDate*1000).diff(moment(event.startDate*1000))).unix()
+      };
+      occurrences.push(occurrence);
+    }
+    const occur = event.recurrence == DAY ? "day" : event.recurrence == WEEK ? "week" : "month";
+    current.add(1, occur);
+  }
+
+  return occurrences;
+}
+
+function matchesRecurrence(current, event) {
+  if (event.recurrence === DAY) {
+    return true;
+  } else if (event.recurrence == WEEK) {
+    return moment(event.startDate*1000).format('ddd') === current.format('ddd');
+  } else if (event.recurrence == MONTH) {
+    return moment(event.startDate*1000).date() === current.date();  
+  }
 }
