@@ -165,12 +165,26 @@ const AddEvent = () => {
           )}
 
           <Divider height={0.5} color={"grey"} />
+          <View  style={{flexDirection:"row",justifyContent:"space-between" }}>
+          <View>
+          <Text style={styles.input}>Select Time:</Text>
+          </View>
+          <View style={{ flexDirection: "row",justifyContent:"flex-end", }}>
 
-          <View style={{ flexDirection: "row", alignItems: "center" }}>
-            <Text style={styles.input}>Select Time:</Text>
-            <TouchableOpacity onPress={() => setShowStartTimePicker(true)} style={styles.date}>
-              <Text>{startTime.toLocaleTimeString()}</Text>
-            </TouchableOpacity>
+            
+
+            <View style={{flexDirection:"row",alignSelf:"flex-end",gap:25}}>
+              <TouchableOpacity onPress={() => setShowStartTimePicker(true)} style={styles.date}>
+                <Text>{startTime.toLocaleTimeString()}</Text>
+              </TouchableOpacity>
+
+
+
+              <TouchableOpacity onPress={() => setShowEndTimePicker(true)} style={styles.date}>
+                <Text>{endTime.toLocaleTimeString()}</Text>
+              </TouchableOpacity>
+
+            </View>
 
             {showStartTimePicker && (
               <DateTimePicker
@@ -187,10 +201,9 @@ const AddEvent = () => {
             )}
 
 
-            <View></View>
-            <TouchableOpacity onPress={() => setShowEndTimePicker(true)} style={styles.date}>
-              <Text>{endTime.toLocaleTimeString()}</Text>
-            </TouchableOpacity>
+            
+            
+          </View>
           </View>
 
           {showEndTimePicker && (
@@ -228,11 +241,11 @@ const AddEvent = () => {
 
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
           <TouchableOpacity onPress={()=> {router.push("calendar")}} style={{ backgroundColor: "#EEEEEE", padding: 8, borderRadius: 5 }}>
-            <Text style={{ fontWeight: "bold" }}>Close</Text>
+            <Text style={{ fontWeight: "bold" }}>Cancel</Text>
           </TouchableOpacity>
 
           <TouchableOpacity onPress={hadleRespone} style={{ backgroundColor: "#EEEEEE", padding: 8, borderRadius: 5 }}>
-            <Text style={{ fontWeight: "bold" }}>Add Event</Text>
+            <Text style={{ fontWeight: "bold" }}>Add </Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -282,7 +295,7 @@ const styles = StyleSheet.create({
   },
   date: {
     backgroundColor: "#EEEEEE",
-    marginLeft: 25,
+    // marginLeft: 25,
     padding: 4,
     borderRadius: 3,
     alignSelf: "flex-end"
