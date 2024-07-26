@@ -14,6 +14,7 @@ const CalendarProvider = ({ children }) => {
   const [previousweek, setPreviousweek] = useState({});
   const [nextweek, setNextweek] = useState({});
   const [weekEvents, setWeekEvents] = useState([]);
+  const [selectedValue, setSelectedValue] = useState("month");
 
   return (
     <CalendarContext.Provider
@@ -23,6 +24,8 @@ const CalendarProvider = ({ children }) => {
         newEvents,
         previousweek,
         setPreviousweek,
+        selectedValue,
+        setSelectedValue,
         nextweek,
         setNextweek,
         weekEvents,

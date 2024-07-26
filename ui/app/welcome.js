@@ -9,12 +9,10 @@ import {
   TouchableOpacity,
   Text,
   Image,
-  ImageBackground,
   StatusBar,
   ActivityIndicator,
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Buffer } from "buffer";
 import Toast from "react-native-toast-message";
 
 export default function WelcomePage() {
@@ -27,6 +25,7 @@ export default function WelcomePage() {
   const [newGoal, setNewGoal] = useState("");
   const [success, setSuccess] = useState(false);
   const [goalLoading, setGoalLoading] = useState("");
+  // const [required, setRequired] = useState(false);
 
   const fetchGoal = async () => {
     try {
@@ -80,6 +79,11 @@ export default function WelcomePage() {
 
   const handleSetGoal = async () => {
     try {
+      console.log(newGoal);
+      if (!newGoal) {
+        return null;
+      }
+
       setGoalLoading(true);
       console.log(Token);
       let res = await fetch(`${process.env.BACKEND_URI}/api/goals`, {
@@ -143,7 +147,7 @@ export default function WelcomePage() {
             justifyContent: "center",
           }}
         >
-          <ActivityIndicator size="large" color="blue" />
+          <ActivityIndicator size="large" color="black" />
         </View>
       ) : (
         <View style={{ backgroundColor: "#92A0AD" }}>
@@ -201,9 +205,13 @@ export default function WelcomePage() {
                 setModalVisible(true);
               }}
             >
-              <TextInput onPress={() => {
-                setModalVisible(true);
-              } }  style={styles.usernameGoal} editable={false} >
+              <TextInput
+                onPress={() => {
+                  setModalVisible(true);
+                }}
+                style={styles.usernameGoal}
+                editable={false}
+              >
                 {goal}
               </TextInput>
             </TouchableOpacity>
@@ -277,17 +285,31 @@ export default function WelcomePage() {
         contentContainerStyle={styles.modalView}
       >
         {goalLoading ? (
-          <ActivityIndicator size="large" />
+          <ActivityIndicator size="large" color={"black"} />
         ) : (
           <>
             <Text style={styles.modalText}>Set a Goal</Text>
+            <View style={{ marginBottom: 20, width: "100%" }}>
+              <TextInput
+                style={styles.input}
+                placeholder="Enter your goal"
+                value={newGoal}
+                onChangeText={setNewGoal}
+              />
+              {newGoal ? null : (
+                <Text
+                  style={{
+                    fontStyle: "italic",
+                    fontSize: 10,
+                    color: "red",
+                    paddingLeft: 10,
+                  }}
+                >
+                  *required
+                </Text>
+              )}
+            </View>
 
-            <TextInput
-              style={styles.input}
-              placeholder="Enter your goal"
-              value={newGoal}
-              onChangeText={setNewGoal}
-            />
             <TouchableOpacity
               style={{
                 backgroundColor: "#C8D5E1",
@@ -299,7 +321,12 @@ export default function WelcomePage() {
                 handleSetGoal();
               }}
             >
-              <Text style={{ color: "black", fontWeight: "bold" }}>
+              <Text
+                onPress={() => {
+                  handleSetGoal();
+                }}
+                style={{ color: "black", fontWeight: "bold" }}
+              >
                 Set Goal
               </Text>
             </TouchableOpacity>
@@ -454,7 +481,7 @@ const styles = StyleSheet.create({
     height: 40,
     borderColor: "#CCCCCC",
     borderWidth: 1,
-    marginBottom: 20,
+
     paddingLeft: 10,
     borderRadius: 10,
   },

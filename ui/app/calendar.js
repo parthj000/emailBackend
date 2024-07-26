@@ -11,11 +11,15 @@ import Header1 from "./TopHeader";
 import FloatButton from "../components/AddButton";
 import AddEvent from "../components/AddEvent";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import Toast from "react-native-toast-message";
 
 const MyCalendar = () => {
   return (
     <>
       <CalendarProvider>
+        <View style={{ position: "relative", zIndex: 5 }}>
+          <Toast />
+        </View>
         <View style={styles.container}>
           <Header1 title="Calendar" />
           <Header />

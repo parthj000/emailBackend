@@ -6,9 +6,16 @@ import { Dropdown } from "react-native-element-dropdown";
 import dayjs from "dayjs";
 
 const Header = () => {
-  const { view, setView, currentDate, setCurrentDate, month, setMonth } =
-    useContext(CalendarContext);
-  const [selectedValue, setSelectedValue] = useState("month");
+  const {
+    view,
+    setView,
+    currentDate,
+    setCurrentDate,
+    month,
+    setMonth,
+    selectedValue,
+    setSelectedValue,
+  } = useContext(CalendarContext);
 
   const data = [
     { label: "Daily", value: "day" },

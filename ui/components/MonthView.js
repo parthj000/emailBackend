@@ -19,8 +19,15 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 const { width, height } = Dimensions.get("window");
 
 const MonthView = () => {
-  const { view, setView, month, setMonth, newEvents, setEvents } =
-    useContext(CalendarContext);
+  const {
+    view,
+    setView,
+    month,
+    setMonth,
+    newEvents,
+    setEvents,
+    setSelectedValue,
+  } = useContext(CalendarContext);
   // const [newEvents, setEvents] = useState([]);
   const [previous, setPrevious] = useState({});
   const [next, setNext] = useState({});
@@ -53,18 +60,21 @@ const MonthView = () => {
   const handleCell = (date) => {
     console.log("Cell pressed:", date);
     setMonth(date);
+    setSelectedValue("day");
     setView("day");
   };
 
   const onSwipeLeft = () => {
     console.log("Swiped Left");
-    setMonth(month.add(1, "month"));
+    console.log(month, "this is month");
+    setMonth(dayjs(month).add(1, "month"));
     fetchMonthEvents(setNext, setPrevious, next, "M", setEvents, setLoading);
   };
 
   const onSwipeRight = () => {
     console.log("Swiped Right");
-    setMonth(month.subtract(1, "month"));
+    setMonth(dayjs(month).subtract(1, "month"));
+    // objct error resolved
     fetchMonthEvents(
       setNext,
       setPrevious,
@@ -79,7 +89,6 @@ const MonthView = () => {
 
   return (
     <>
-
       {loading ? (
         <View style={styles.loadingContainer}>
           <ActivityIndicator size="large" color="black" />
@@ -100,12 +109,12 @@ const MonthView = () => {
                 width={width}
                 mode="month"
                 swipeEnabled={false}
+                date={month}
               />
             </View>
           </PanGestureHandler>
         </GestureHandlerRootView>
       )}
-
     </>
   );
 };
