@@ -1,8 +1,9 @@
 
 import React, { useState } from 'react';
-import { View, StyleSheet, Alert,Modal } from 'react-native';
+import { View, StyleSheet, Alert,Modal, ImageBackground } from 'react-native';
 import { FloatingAction } from 'react-native-floating-action';
-import AddEvent from "./AddEvent";
+
+import { router } from 'expo-router';
 
 
 const FloatButton = () => {
@@ -10,15 +11,19 @@ const FloatButton = () => {
   const actions = [
     {
       text: 'Add Event',
-      // icon: require('./path-to-event-icon.png'),
+      textBackground:"#E1E1E1",
+      icon: require('../assets/calendar-check.png'),
       name: 'add_event',
       position: 1,
+      color:"#92A0AD"
     },
     {
       text: 'Add Task',
-      // icon: require('./path-to-task-icon.png'),
+      textBackground:"#E1E1E1",
+      icon: require('../assets/clipboard.png'),
       name: 'add_task',
       position: 2,
+      color:"#92A0AD"
     },
   ];
 
@@ -28,13 +33,12 @@ const FloatButton = () => {
   const handlePress = (name) => {
     if (name === 'add_event') {
       
+      router.push("add");
 
-      
-      setModalVisible(true);
-      
     } else if (name === 'add_task') {
       // Handle add task action
-      Alert.alert('Add Task', 'Task button pressed');
+      // Alert.alert('Add Task', 'Task button pressed');
+      router.push("addtask");
     }
   };
 
@@ -52,18 +56,7 @@ const FloatButton = () => {
         onPressItem={handlePress}
       />
 
-  <Modal
-        visible={modalVisible}
-        animationType="slide"
-        transparent={true}
-        onRequestClose={() => setModalVisible(false)}
-      >
-        <View style={styles.modalContainer}>
-          <AddEvent 
-            modalVisible={modalVisible} setModalVisible={setModalVisible} 
-          />
-        </View>
-      </Modal>
+  
       
       
     </View>

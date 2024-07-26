@@ -10,6 +10,7 @@ import MonthView from "../components/MonthView";
 import Header1 from "./TopHeader";
 import FloatButton from "../components/AddButton";
 import AddEvent from "../components/AddEvent";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 const MyCalendar = () => {
   return (
@@ -22,9 +23,8 @@ const MyCalendar = () => {
           <WeekView />
           <MonthView />
           {/* <AddEvent /> */}
-          
-          
-          <FloatButton/> 
+
+          <FloatButton />
         </View>
       </CalendarProvider>
     </>

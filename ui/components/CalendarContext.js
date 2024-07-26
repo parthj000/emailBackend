@@ -6,7 +6,7 @@ const CalendarProvider = ({ children }) => {
   const [view, setView] = useState("week");
   const [modalVisible, setModalVisible] = useState(false);
   const [headerVisible, setHeaderVisible] = useState(false);
-
+  const [month, setMonth] = useState(null);
   const [currentDate, setCurrentDate] = useState(
     new Date().toISOString().split("T")[0]
   );
@@ -15,6 +15,8 @@ const CalendarProvider = ({ children }) => {
     <CalendarContext.Provider
       value={{
         view,
+        month,
+        setMonth,
         setView,
         modalVisible,
         setModalVisible,
