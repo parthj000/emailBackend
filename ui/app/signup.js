@@ -220,7 +220,7 @@ const styles = StyleSheet.create({
     margin: 0,
   },
   error: {
-    color: "red",
+    color: "black",
     fontSize: 12,
     fontStyle: "italic",
   },
