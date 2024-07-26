@@ -5,10 +5,13 @@ import Divider from "../components/Divder";
 import { Dropdown } from 'react-native-element-dropdown';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
-import { router } from 'expo-router';
+import { router, } from 'expo-router';
+import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import WeekView from '../components/WeekView'
 const AddEvent = () => {
+
+  const navigation = useNavigation();
   const data = [
     { label: 'No Repeat', value: 'N' },
     { label: 'Daily', value: 'D' },
@@ -240,11 +243,11 @@ const AddEvent = () => {
         </View>
 
         <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-          <TouchableOpacity onPress={()=> {router.push("calendar")}} style={{ backgroundColor: "#EEEEEE", padding: 8, borderRadius: 5 }}>
+          <TouchableOpacity onPress={()=> {navigation.goBack(WeekView)}} style={{ backgroundColor: "#C8D5E1", padding: 8, borderRadius: 5 }}>
             <Text style={{ fontWeight: "bold" }}>Cancel</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity onPress={hadleRespone} style={{ backgroundColor: "#EEEEEE", padding: 8, borderRadius: 5 }}>
+          <TouchableOpacity onPress={hadleRespone} style={{ backgroundColor: "#C8D5E1", padding: 8, borderRadius: 5 }}>
             <Text style={{ fontWeight: "bold" }}>Add </Text>
           </TouchableOpacity>
         </View>

@@ -57,7 +57,7 @@ const SignUpButton = (props) => {
   return (
     <>
       {loading ? (
-        <ActivityIndicator size="small" color="#007BFF" />
+        <ActivityIndicator size="small" color="black" />
       ) : (
         <TouchableOpacity
           style={styles.signUpButton}
@@ -95,14 +95,14 @@ export default SignUpButton;
 const styles = StyleSheet.create({
   signUpButton: {
     width: "100%",
-    backgroundColor: "#007BFF",
+    backgroundColor: "#C8D5E1",
     padding: 12,
     marginTop: 15,
     alignItems: "center",
     borderRadius: 10,
   },
   signUpButtonText: {
-    color: "white",
+    color: "black",
     fontWeight: "bold",
   },
 });

@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Text,
   Image,
+  StatusBar,
   TouchableWithoutFeedback,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
@@ -33,6 +34,7 @@ export default function SignUpPage() {
 
   return (
     <>
+      <StatusBar barStyle="dark-content" backgroundColor="#92A0AD" />
       <View style={{ position: "relative", zIndex: 78, width: "100%" }}>
         <Toast />
       </View>
@@ -130,7 +132,7 @@ export default function SignUpPage() {
         {/* Option Text */}
         <Text style={styles.optionText}>
           Already have an account?{" "}
-          <Link href="/login" style={{ color: "blue" }}>
+          <Link href="/login" style={{ color: "black" }}>
             Log In
           </Link>
         </Text>
@@ -146,11 +148,13 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 10,
     paddingHorizontal: 30,
+    backgroundColor:"#92A0AD"
   },
   input: {
     height: 40,
-    borderColor: "rgb(219 217 217)",
+    borderColor: "black",
     borderWidth: 1,
+    fontWeight:"bold",
     // marginBottom: 12,
     padding: 12,
     borderRadius: 9,
@@ -170,14 +174,14 @@ const styles = StyleSheet.create({
   },
   signUpButton: {
     width: "100%",
-    backgroundColor: "#007BFF",
+    backgroundColor: "#E1E1E1",
     padding: 12,
     marginTop: 15,
     alignItems: "center",
     borderRadius: 10,
   },
   signUpButtonText: {
-    color: "white",
+    color: "black",
     fontWeight: "bold",
   },
   optionText: {
@@ -200,9 +204,10 @@ const styles = StyleSheet.create({
     top: 12,
   },
   inputEmail: {
+    fontWeight:"bold",
     width: "100%",
     height: 40,
-    borderColor: "rgb(219 217 217)",
+    borderColor: "black",
     borderWidth: 1,
     // marginBottom: 1,
     padding: 12,

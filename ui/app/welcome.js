@@ -203,7 +203,9 @@ export default function WelcomePage() {
                 setModalVisible(true);
               }}
             >
-              <TextInput style={styles.usernameGoal} editable={false}>
+              <TextInput onPress={() => {
+                setModalVisible(true);
+              } }  style={styles.usernameGoal} editable={false} >
                 {goal}
               </TextInput>
             </TouchableOpacity>

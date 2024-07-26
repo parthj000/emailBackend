@@ -31,7 +31,7 @@ const MyCalendarComponent = () => {
     <>
     {loading ? (
       <View style={{flex:1,alignItems:"center",justifyContent:"center"}}>
-      <ActivityIndicator size="large" color="grey" />
+      <ActivityIndicator size="large" color="black" />
       </View>
     ):
       <View style={styles.container}>

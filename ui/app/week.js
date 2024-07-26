@@ -82,7 +82,7 @@ const CustomWeeklyComponent = () => {
     <>
     {loading ? (
       <View style={{flex:1,alignItems:"center",justifyContent:"center"}}>
-      <ActivityIndicator size="large" color="grey" />
+      <ActivityIndicator size="large" color="black" />
       </View>
     ):
     <GestureHandlerRootView style={{ flex: 1 }}>
