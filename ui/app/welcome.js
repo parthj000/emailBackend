@@ -151,11 +151,9 @@ export default function WelcomePage() {
             <Toast />
           </View>
 
-          {/* <ImageBackground
-            style={styles.bgimage}
-            source={require("../assets/welcome-bg.png")}
-          ></ImageBackground> */}
-          <View style={{ paddingTop: 30, marginHorizontal: 80 }}>
+          <View
+            style={{ justifyContent: "flex-end", marginEnd: 25, marginTop: 30 }}
+          >
             <TouchableOpacity
               style={{
                 backgroundColor: "transparent",
@@ -210,7 +208,14 @@ export default function WelcomePage() {
               </TextInput>
             </TouchableOpacity>
           </View>
-          <Text style={{ textAlign: "center", fontWeight: "bold" }}>
+          <Text
+            style={{
+              textAlign: "center",
+              fontWeight: "bold",
+              // marginLeft: 40,
+              // width: "83%",
+            }}
+          >
             Goals for today
           </Text>
 
@@ -283,13 +288,21 @@ export default function WelcomePage() {
               value={newGoal}
               onChangeText={setNewGoal}
             />
-            <Button
+            <TouchableOpacity
+              style={{
+                backgroundColor: "#C8D5E1",
+                borderRadius: 5,
+                color: "white",
+                padding: 7,
+              }}
               onPress={() => {
                 handleSetGoal();
               }}
             >
-              Set Goal
-            </Button>
+              <Text style={{ color: "black", fontWeight: "bold" }}>
+                Set Goal
+              </Text>
+            </TouchableOpacity>
           </>
         )}
       </Modal>
@@ -314,7 +327,7 @@ const styles = StyleSheet.create({
 
   Welcome: {
     fontWeight: "300",
-    marginTop: "12%",
+    marginTop: "5%",
     fontSize: 40,
     color: "black",
   },
@@ -421,7 +434,7 @@ const styles = StyleSheet.create({
   },
 
   modalView: {
-    backgroundColor: "white",
+    backgroundColor: "#E1E1E1",
     padding: 20,
     margin: 45,
     width: "80%",

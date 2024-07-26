@@ -3,33 +3,12 @@ import { View, Text, StyleSheet } from "react-native";
 import { CalendarContext } from "./CalendarContext";
 import { Divider } from "react-native-paper";
 import { Dropdown } from "react-native-element-dropdown";
+import dayjs from "dayjs";
 
 const Header = () => {
-  const {
-    view,
-    setView,
-    currentDate,
-    headerVisible,
-    setHeaderVisible,
-    month,
-    setMonth,
-  } = useContext(CalendarContext);
+  const { view, setView, currentDate, setCurrentDate, month, setMonth } =
+    useContext(CalendarContext);
   const [selectedValue, setSelectedValue] = useState("month");
-
-  const monthMap = {
-    0: "January",
-    1: "February",
-    2: "March",
-    3: "April",
-    4: "May",
-    5: "June",
-    6: "July",
-    7: "August",
-    8: "September",
-    9: "October",
-    10: "November",
-    11: "December",
-  };
 
   const data = [
     { label: "Daily", value: "day" },
@@ -48,7 +27,27 @@ const Header = () => {
             paddingHorizontal: 10,
           }}
         >
-          <Text style={styles.dateText}>{monthMap[month]}</Text>
+          {view === "month" ? (
+            <Text style={styles.dateText}>
+              {`${dayjs(month).toDate().toDateString().split(" ")[1]}  ${
+                dayjs(month).toDate().toDateString().split(" ")[3]
+              }`}
+            </Text>
+          ) : null}
+          {view === "week" ? (
+            <Text style={styles.dateText}>
+              {`${dayjs(currentDate).toDate().toDateString().split(" ")[1]}  ${
+                dayjs(currentDate).toDate().toDateString().split(" ")[3]
+              }`}
+            </Text>
+          ) : null}
+          {view === "day" ? (
+            <Text style={styles.dateText}>
+              {`${dayjs(month).toDate().toDateString().split(" ")[1]}  ${
+                dayjs(month).toDate().toDateString().split(" ")[3]
+              }`}
+            </Text>
+          ) : null}
           <Dropdown
             style={styles.dropdown}
             data={data}
@@ -76,9 +75,8 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   dropdown: {
-    width:"30%",
+    width: "30%",
     marginLeft: 10,
-    
   },
 });
 

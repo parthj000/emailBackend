@@ -1,55 +1,56 @@
-import React, { useState ,useContext, useEffect} from 'react';
-import { View, StyleSheet, Dimensions,ActivityIndicator} from 'react-native';
-import { GestureHandlerRootView, PanGestureHandler, State } from 'react-native-gesture-handler';
-import { Calendar } from 'react-native-big-calendar';
-import { CalendarContext } from './CalendarContext';
-import dayjs from 'dayjs';
-import { fetchMonthEvents } from './MonthView';
+import React, { useState, useContext, useEffect } from "react";
+import { View, StyleSheet, Dimensions, ActivityIndicator } from "react-native";
+import {
+  GestureHandlerRootView,
+  PanGestureHandler,
+  State,
+} from "react-native-gesture-handler";
+import { Calendar } from "react-native-big-calendar";
+import { CalendarContext } from "./CalendarContext";
+import dayjs from "dayjs";
+import { fetchMonthEvents } from "./MonthView";
 
-const { width, height } = Dimensions.get('window');
+const { width, height } = Dimensions.get("window");
 
 const MyCalendarComponent = () => {
-  const { view, setView, month, setMonth } =
+  const { view, setView, month, setMonth, newEvents, setEvents } =
     useContext(CalendarContext);
   const [currentDate, setCurrentDate] = useState(dayjs().toDate());
-  const [newEvents, setEvents] = useState([]);
+  // const [newEvents, setEvents] = useState([]);
   const [previous, setPrevious] = useState({});
   const [next, setNext] = useState({});
-  const [loading,setLoading] =useState(false);
+  const [loading, setLoading] = useState(false);
 
-  useEffect( () => {
-
-    fetchMonthEvents(setNext, setPrevious, {}, "D", setEvents,setLoading)
-  },[]
-  );
-
-
+  useEffect(() => {
+    fetchMonthEvents(setNext, setPrevious, {}, "D", setEvents, setLoading);
+  }, []);
 
   if (view !== "day") return null;
 
   return (
     <>
-    {loading ? (
-      <View style={{flex:1,alignItems:"center",justifyContent:"center"}}>
-      <ActivityIndicator size="large" color="black" />
-      </View>
-    ):
-      <View style={styles.container}>
-        <Calendar
-          events={newEvents} // Add your events here
-          height={height}
-          width={width}
-          mode="day"
-          date={currentDate}
 
-          swipeEnabled={false}
-        />
-        
-      </View>
-    }
+      {loading ? (
+        <View
+          style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+        >
+          <ActivityIndicator size="large" color="black" />
+        </View>
+      ) : (
+        <View style={styles.container}>
+          {console.log(month)}
+          <Calendar
+            events={newEvents} // Add your events here
+            height={height}
+            width={width}
+            mode="day"
+            date={month}
+            swipeEnabled={false}
+          />
+        </View>
+      )}
+    </>
 
-  </>
-    
   );
 };
 
@@ -59,17 +60,17 @@ const styles = StyleSheet.create({
   },
   overlayContainer: {
     ...StyleSheet.absoluteFillObject,
-    flexDirection: 'row',
+    flexDirection: "row",
   },
   leftHalf: {
     width: width / 2,
-    height: '100%',
-    backgroundColor: 'transparent',
+    height: "100%",
+    backgroundColor: "transparent",
   },
   rightHalf: {
     width: width / 2,
-    height: '100%',
-    backgroundColor: 'transparent',
+    height: "100%",
+    backgroundColor: "transparent",
   },
 });
 

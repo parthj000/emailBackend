@@ -12,17 +12,17 @@ import {
 import { useNavigation } from "@react-navigation/native";
 import WeekView from "../app/week";
 import Icon from "react-native-vector-icons/Ionicons";
+import WelcomePage from "./welcome";
+import { router } from "expo-router";
 
 const Header = ({ title }) => {
   const navigation = useNavigation();
 
   return (
     <SafeAreaView style={{ backgroundColor: "#92A0AD" }}>
-      
       <View style={styles.headerContainer}>
-      
-        <TouchableOpacity onPress={() => navigation.goBack(WeekView)}>
-        <StatusBar barStyle="dark-content" backgroundColor="#92A0AD" />
+        <TouchableOpacity onPress={() => router.push("welcome")}>
+          <StatusBar barStyle="dark-content" backgroundColor="#92A0AD" />
           <Icon name="arrow-back" size={24} color="#000" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>{title}</Text>
