@@ -101,6 +101,7 @@ const CustomWeeklyComponent = () => {
               mode="week"
               swipeEnabled={true}
               date={currentDate}
+              
             />
           </View>
         </PanGestureHandler>

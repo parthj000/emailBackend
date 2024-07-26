@@ -74,7 +74,7 @@ const LoginButton = (props) => {
           }}
         >
           <Text style={styles.signUpButtonText}>Log In</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> 
       )}
     </>
   );
