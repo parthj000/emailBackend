@@ -2,14 +2,17 @@
 import clientPromise from '../../lib/mongodb';
 import { ObjectId } from 'mongodb';
 import jwt from 'jsonwebtoken';
+import { ClientPageRoot } from 'next/dist/client/components/client-page';
 
 export default async (req, res) => {
+ 
+  const token = req.headers["x-auth-token"];
+
   if (req.method === 'POST') {
     // POST request handler
 
-    const token = req.headers["x-auth-token"];
 
-    const  goalText  = req.body;
+    const  goalText  = req.body.goalText;
 
     // if (!token || !goalText) {
     //   return res.status(400).json({ message: 'Token and goalText are required' });
@@ -43,7 +46,8 @@ export default async (req, res) => {
         );
 
         res.status(200).json({ message: 'Goal updated successfully' });
-      } else {
+      } 
+      else {
         // Insert a new goal
         const result = await db.collection('goals').insertOne({
           userId: new ObjectId(decoded.userId),
@@ -57,9 +61,11 @@ export default async (req, res) => {
     } catch (error) {
       res.status(500).json({ message: 'Internal server error' });
     }
-  } else if (req.method === 'GET') {
+  } 
+  
+  else if (req.method === 'GET') {
     // GET request handler
-    const { token } = req.query;
+    // const { token } = req.query;
 
     if (!token) {
       return res.status(400).json({ message: 'Token is required' });
@@ -70,9 +76,37 @@ export default async (req, res) => {
       const client = await clientPromise;
       const db = client.db('');
 
-      const goals = await db.collection('goals').find({ userId: new ObjectId(decoded.userId) }).toArray();
+      const goals = await db.collection('goals').findOne({ userId: new ObjectId(decoded.userId) });
+      // const newRes = goals.goatex
+      const buffer = Buffer.from(token.split(".")[1], 'base64');
+      const details = JSON.parse(buffer.toString())
+      let usrname = details.username;
+      let email = details.email;
+      console.log(usrname,email);
+      console.log(goals);
+      var obj;
+      if(goals){
 
-      res.status(200).json({ goals });
+
+      obj = {
+          username:usrname,
+          email:email,
+          goalText:goals.goalText
+        }
+      }
+      else{
+        obj = {
+          username:usrname,
+          email:email,
+          goalText:null
+        }
+      }
+
+      
+        // console.log(obj,"yeh hama ");
+
+
+      res.status(200).json(obj);
     } catch (error) {
       res.status(500).json({ message: 'Internal server error' });
     }
