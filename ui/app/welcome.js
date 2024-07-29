@@ -156,7 +156,7 @@ export default function WelcomePage() {
           </View>
 
           <View
-            style={{ justifyContent: "flex-end", marginEnd: 25, marginTop: 30 }}
+            style={{ justifyContent: "flex-end", marginRight: 25, marginTop: 30 }}
           >
             <TouchableOpacity
               style={{
@@ -327,7 +327,7 @@ export default function WelcomePage() {
                 }}
                 style={{ color: "black", fontWeight: "bold" }}
               >
-                Set Goal
+                Save
               </Text>
             </TouchableOpacity>
           </>

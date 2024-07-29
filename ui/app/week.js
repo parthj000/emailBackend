@@ -98,7 +98,6 @@ const CustomWeeklyComponent = () => {
 
   return (
     <>
-
       {loading ? (
         <View
           style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
@@ -120,6 +119,10 @@ const CustomWeeklyComponent = () => {
               <View style={{ flex: 1 }}>
                 <Calendar
                   events={weekEvents}
+                  weekDayHeaderHighlightColor="#92A0AD"
+                  
+                  dayHeaderStyle={{ backgroundColor: "white" }}
+                  dayHeaderHighlightColor="#92A0AD"
                   height={height}
                   width={width}
                   mode="week"
@@ -128,7 +131,6 @@ const CustomWeeklyComponent = () => {
                 />
               </View>
             </PanGestureHandler>
-
           </View>
         </GestureHandlerRootView>
       )}

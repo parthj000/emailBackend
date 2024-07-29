@@ -28,7 +28,7 @@ const AddEvent = () => {
 
   const [date, setDate] = useState(new Date());
   const [startTime, setStartTime] = useState(new Date());
-  const [endTime, setEndTime] = useState(new Date());
+  const [endTime, setEndTime] = useState(new Date(Date.now() + 30 * 60 * 1000));
   const [selectedValue, setSelectedValue] = useState("N");
   const [showStartDatePicker, setShowStartDatePicker] = useState(false);
   const [showStartTimePicker, setShowStartTimePicker] = useState(false);
@@ -164,14 +164,24 @@ const AddEvent = () => {
                   onPress={() => setShowStartTimePicker(true)}
                   style={styles.date}
                 >
-                  <Text>{startTime.toLocaleTimeString()}</Text>
+                  <Text>
+                    {startTime.toLocaleTimeString([], {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity
                   onPress={() => setShowEndTimePicker(true)}
                   style={styles.date}
                 >
-                  <Text>{endTime.toLocaleTimeString()}</Text>
+                  <Text>
+                    {endTime.toLocaleTimeString([], {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </Text>
                 </TouchableOpacity>
               </View>
 
@@ -179,6 +189,7 @@ const AddEvent = () => {
                 <DateTimePicker
                   value={date}
                   mode="time"
+                  is24Hour={false}
                   display="spinner"
                   onChange={(event, val) => {
                     setShowStartTimePicker(false);
@@ -193,9 +204,11 @@ const AddEvent = () => {
           {showEndTimePicker && (
             <DateTimePicker
               value={date}
+              is24Hour={false}
               mode="time"
               display="spinner"
               onChange={(event, val) => {
+               
                 setShowEndTimePicker(false);
                 setEndTime(val);
                 console.log(val.valueOf());

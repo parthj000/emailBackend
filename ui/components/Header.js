@@ -55,12 +55,15 @@ const Header = () => {
               }`}
             </Text>
           ) : null}
+
           <Dropdown
             style={styles.dropdown}
             data={data}
             labelField="label"
             valueField="value"
             value={selectedValue}
+            selectedTextStyle={{ fontWeight: "bold" }}
+            iconColor="black"
             onChange={(item) => {
               setSelectedValue(item.value);
               setView(item.value); // Update the view based on the selected value
@@ -79,7 +82,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#92A0AD",
   },
   dateText: {
-    fontSize: 18,
+    fontSize: 22,
+    fontWeight:'300'
   },
   dropdown: {
     width: "30%",

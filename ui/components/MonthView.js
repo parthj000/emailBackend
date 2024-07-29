@@ -4,6 +4,7 @@ import {
   StyleSheet,
   Dimensions,
   ActivityIndicator,
+  Alert,
   Text,
 } from "react-native";
 import { Calendar } from "react-native-big-calendar";
@@ -24,11 +25,10 @@ const MonthView = () => {
     setView,
     month,
     setMonth,
-    newEvents,
-    setEvents,
+
     setSelectedValue,
   } = useContext(CalendarContext);
-  // const [newEvents, setEvents] = useState([]);
+  const [newEvents, setEvents] = useState([]);
   const [previous, setPrevious] = useState({});
   const [next, setNext] = useState({});
   const [loading, setLoading] = useState(false);
@@ -59,22 +59,22 @@ const MonthView = () => {
 
   const handleCell = (date) => {
     console.log("Cell pressed:", date);
-    setMonth(date);
     setSelectedValue("day");
+    setMonth(date);
     setView("day");
   };
 
   const onSwipeLeft = () => {
-    console.log("Swiped Left");
-    console.log(month, "this is month");
+    
+    
     setMonth(dayjs(month).add(1, "month"));
     fetchMonthEvents(setNext, setPrevious, next, "M", setEvents, setLoading);
   };
 
   const onSwipeRight = () => {
-    console.log("Swiped Right");
+    
     setMonth(dayjs(month).subtract(1, "month"));
-    // objct error resolved
+    
     fetchMonthEvents(
       setNext,
       setPrevious,
@@ -103,9 +103,20 @@ const MonthView = () => {
           >
             <View style={styles.calendarWrapper}>
               <Calendar
+              headerContainerStyle={{backgroundColor:"white"}}
+              
+                dayHeaderHighlightColor="red"
+                eventCellStyle={{backgroundColor:"#92A0AD"}}
+                dayHeaderStyle={{colo:"red"}}
+                
                 events={newEvents}
                 onPressCell={handleCell}
                 height={height}
+                showAdjacentMonths={false}
+                onPressEvent={(e) => {
+                  console.log(e);
+                  Alert.alert(e.title, e.des);
+                }}
                 width={width}
                 mode="month"
                 swipeEnabled={false}
@@ -178,6 +189,8 @@ export function doEventsStructuring(events) {
     start: new Date(key.startDate * 1000),
     end: new Date(key.endDate * 1000),
     color: "grey",
+    
+    des:key.description
   }));
 }
 

@@ -11,6 +11,11 @@
       "distribution": "internal"
     },
     "production": {
+      "env": {
+        "BACKEND_URI":"https://back-black-gamma.vercel.app"
+
+      },
+
       "android": {
         "buildType": "apk"
       }
