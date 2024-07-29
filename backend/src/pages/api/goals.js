@@ -2,21 +2,17 @@
 import clientPromise from '../../lib/mongodb';
 import { ObjectId } from 'mongodb';
 import jwt from 'jsonwebtoken';
-import { ClientPageRoot } from 'next/dist/client/components/client-page';
 
 export default async (req, res) => {
- 
   const token = req.headers["x-auth-token"];
 
   if (req.method === 'POST') {
     // POST request handler
+    const { goalText } = req.body;
 
-
-    const  goalText  = req.body.goalText;
-
-    // if (!token || !goalText) {
-    //   return res.status(400).json({ message: 'Token and goalText are required' });
-    // }
+    if (!token || !goalText) {
+      return res.status(400).json({ message: 'Token and goalText are required' });
+    }
 
     try {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
@@ -29,9 +25,11 @@ export default async (req, res) => {
         return res.status(404).json({ message: 'User not found' });
       }
 
-      const currentDate = new Date();
-      const past24Hours = new Date(currentDate.getTime() - 24 * 60 * 60 * 1000);
-
+      const currentTimestamp = Math.floor(Date.now() / 1000);
+      // console.log(currentTimestamp);
+      const past24Hours = currentTimestamp - 24 * 60 * 60;
+      // console.log(past24Hours);
+      
       // Check if there is an existing goal within the past 24 hours
       const existingGoal = await db.collection('goals').findOne({
         userId: new ObjectId(decoded.userId),
@@ -42,18 +40,17 @@ export default async (req, res) => {
         // Update the existing goalText
         await db.collection('goals').updateOne(
           { _id: existingGoal._id },
-          { $set: { goalText, username: user.username } }
+          { $set: { goalText, username: user.username, createdAt: currentTimestamp } }
         );
 
         res.status(200).json({ message: 'Goal updated successfully' });
-      } 
-      else {
+      } else {
         // Insert a new goal
         const result = await db.collection('goals').insertOne({
           userId: new ObjectId(decoded.userId),
           username: user.username,
           goalText,
-          createdAt: currentDate,
+          createdAt: currentTimestamp, // Store timestamp
         });
 
         res.status(201).json({ message: 'Goal saved successfully', goalId: result.insertedId });
@@ -65,8 +62,6 @@ export default async (req, res) => {
   
   else if (req.method === 'GET') {
     // GET request handler
-    // const { token } = req.query;
-
     if (!token) {
       return res.status(400).json({ message: 'Token is required' });
     }
@@ -74,37 +69,18 @@ export default async (req, res) => {
     try {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
       const client = await clientPromise;
-      const db = client.db('');
+      const db = client.db('your-database-name');
 
       const goals = await db.collection('goals').findOne({ userId: new ObjectId(decoded.userId) });
-      // const newRes = goals.goatex
       const buffer = Buffer.from(token.split(".")[1], 'base64');
-      const details = JSON.parse(buffer.toString())
-      let usrname = details.username;
-      let email = details.email;
-      console.log(usrname,email);
-      console.log(goals);
-      var obj;
-      if(goals){
+      const details = JSON.parse(buffer.toString());
+      const { username, email } = details;
 
-
-      obj = {
-          username:usrname,
-          email:email,
-          goalText:goals.goalText
-        }
-      }
-      else{
-        obj = {
-          username:usrname,
-          email:email,
-          goalText:null
-        }
-      }
-
-      
-        // console.log(obj,"yeh hama ");
-
+      let obj = {
+        username,
+        email,
+        goalText: goals ? goals.goalText : null,
+      };
 
       res.status(200).json(obj);
     } catch (error) {

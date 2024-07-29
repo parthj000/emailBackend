@@ -48,6 +48,10 @@ export default async function handler(req, res) {
         return res.status(400).json({ message: "Invalid startDate format" });
       }
 
+      if (endDateTimestamp <= startDateTimestamp) {
+        return res.status(400).json({ message: "End time must be greater than start time" });
+      }
+
       const newEvent = {
         userId: decoded.userId,
         title,
