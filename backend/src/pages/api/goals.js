@@ -11,7 +11,7 @@ export default async (req, res) => {
     const { goalText } = req.body;
 
     if (!token || !goalText) {
-      return res.status(400).json({ message: 'Token and goalText are required' });
+      return res.status(400).json({ message: 'Goal text is required' });
     }
 
     try {
@@ -29,7 +29,7 @@ export default async (req, res) => {
       // console.log(currentTimestamp);
       const past24Hours = currentTimestamp - 24 * 60 * 60;
       // console.log(past24Hours);
-      
+
       // Check if there is an existing goal within the past 24 hours
       const existingGoal = await db.collection('goals').findOne({
         userId: new ObjectId(decoded.userId),
@@ -69,7 +69,7 @@ export default async (req, res) => {
     try {
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
       const client = await clientPromise;
-      const db = client.db('your-database-name');
+      const db = client.db('');
 
       const goals = await db.collection('goals').findOne({ userId: new ObjectId(decoded.userId) });
       const buffer = Buffer.from(token.split(".")[1], 'base64');

@@ -68,7 +68,7 @@ export default async function handler(req, res) {
     }
 
     if (method === "GET") {
-      console.log('Insider Events Get');
+      // console.log('Insider Events Get');
       const { mode, startDate, endDate } = req.query;
       let startTimestamp, endTimestamp, prevStart, prevEnd, nextStart, nextEnd;
       let startDayjs, endDayjs;
