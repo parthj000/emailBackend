@@ -26,8 +26,10 @@ async function signUp(email, username, password, setLoading) {
     }),
   })
     .then((res) => {
-      if (res.status == 400 || res.status == 409 || res.status == 201) {
+      if (res.status == 400 || res.status == 201) {
         return res.json();
+      } else if (res.status === 409) {
+        throw new Error("Username or email already exist");
       } else {
         throw new Error("Oops, Something went wrong !");
       }
@@ -43,11 +45,10 @@ async function signUp(email, username, password, setLoading) {
     .catch((error) => {
       Toast.show({
         type: "error",
-        text1: "Error",
-        text2: error.message,
+        text1: error.message,
       });
-      console.log(data);
       setLoading(false);
+      console.log(data);
     });
 }
 
@@ -57,7 +58,7 @@ const SignUpButton = (props) => {
   return (
     <>
       {loading ? (
-        <ActivityIndicator size="small" color="#007BFF" />
+        <ActivityIndicator size="small" color="black" />
       ) : (
         <TouchableOpacity
           style={styles.signUpButton}
@@ -95,14 +96,14 @@ export default SignUpButton;
 const styles = StyleSheet.create({
   signUpButton: {
     width: "100%",
-    backgroundColor: "#007BFF",
+    backgroundColor: "#C8D5E1",
     padding: 12,
     marginTop: 15,
     alignItems: "center",
     borderRadius: 10,
   },
   signUpButtonText: {
-    color: "white",
+    color: "black",
     fontWeight: "bold",
   },
 });

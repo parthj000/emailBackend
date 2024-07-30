@@ -55,7 +55,7 @@ const LoginButton = (props) => {
   return (
     <>
       {loading ? (
-        <ActivityIndicator size="small" color="#007BFF" />
+        <ActivityIndicator size="small" color="black" />
       ) : (
         <TouchableOpacity
           style={styles.signUpButton}
@@ -74,7 +74,7 @@ const LoginButton = (props) => {
           }}
         >
           <Text style={styles.signUpButtonText}>Log In</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> 
       )}
     </>
   );
@@ -85,7 +85,7 @@ export default LoginButton;
 const styles = StyleSheet.create({
   signUpButton: {
     width: "100%",
-    backgroundColor: "#E1E1E1",
+    backgroundColor: "#C8D5E1",
     padding: 12,
     marginTop: 15,
     alignItems: "center",

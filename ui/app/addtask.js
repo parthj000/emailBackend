@@ -5,19 +5,22 @@ import {
   StatusBar,
   TextInput,
   TouchableOpacity,
+  ActivityIndicator,
 } from "react-native";
 import React, { useState } from "react";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import Divider from "../components/Divder"; // Ensure this is the correct import for your Divider component
+import Divider from "../components/Divder";
 import { Dropdown } from "react-native-element-dropdown";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import { router } from "expo-router";
+import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
-const AddTask = () => {
+import WeekView from "../components/WeekView";
+const AddEvent = () => {
+  const navigation = useNavigation();
   const data = [
-    { label: "No Repeat", value: "N" },
+    { label: "No repeat", value: "N" },
     { label: "Daily", value: "D" },
     { label: "Weekly", value: "W" },
     { label: "Monthly", value: "M" },
@@ -25,79 +28,71 @@ const AddTask = () => {
 
   const [date, setDate] = useState(new Date());
   const [startTime, setStartTime] = useState(new Date());
-  const [endTime, setEndTime] = useState(new Date());
+  const [endTime, setEndTime] = useState(new Date(Date.now() + 30 * 60 * 1000));
   const [selectedValue, setSelectedValue] = useState("N");
   const [showStartDatePicker, setShowStartDatePicker] = useState(false);
   const [showStartTimePicker, setShowStartTimePicker] = useState(false);
   const [showEndTimePicker, setShowEndTimePicker] = useState(false);
   const [firstInput, setFirstInput] = useState("");
   const [secondInput, setSecondInput] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const hadleRespone = async () => {
-    const data = {
-      token: "",
-      startDate: startTime.valueOf(),
-      endDate: endTime.valueOf(),
-      title: firstInput,
-      discreption: secondInput,
-      recurrence: selectedValue,
-    };
-
-    console.log(data);
     try {
+      setLoading(true);
       const token = await AsyncStorage.getItem("token");
-      console.log(token)
-      const request = await fetch(`${process.env.BACKEND_URI}/api/events`,{
-        method:"POST",
-        headers:{
-          "Content-Type":"application/json",
-          "Authorization":`Bearer ${token}`
+      console.log(token);
+      const request = await fetch(`${process.env.BACKEND_URI}/api/events`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
-        body:JSON.stringify({
-          token:token,
-          startDate:startTime.valueOf(),
-          endDate:endTime.valueOf(),
-          title:firstInput,
-          description:secondInput,
-          recurrence:selectedValue,
+        body: JSON.stringify({
+          token: token,
+          startDate: startTime.valueOf(),
+          endDate: endTime.valueOf(),
+          title: firstInput,
+          description: secondInput,
+          recurrence: selectedValue,
           category: "T",
-  
-  
-        })
-      })
+        }),
+      });
       const res = await request.json();
-      console.log(res)
-      if(request.ok){
-        Toast.show({
-          type:"success",
-          text1:"Task created succesfully",
-
-        })
-
-        // router.push("calendar")
-      }
       console.log(res);
+      if (request.ok) {
+        router.push("calendar");
+        Toast.show({
+          type: "success",
+          text1: "Event created succesfully",
+        });
+      }
+      Toast.show({
+        type: "error",
+        text1: res.message,
+      });
+
+      console.log(res);
+      setLoading(false);
     } catch (error) {
-      console.log(error);
       Toast.show({
         type: "error",
         text1: "Event not created",
       });
+      setLoading(false);
     }
   };
 
   console.log(date);
   return (
     <>
+      <StatusBar barStyle="dark-content" backgroundColor="#92A0AD" />
       <View style={{ position: "relative", zIndex: 5 }}>
         <Toast />
       </View>
-      <StatusBar barStyle="dark-content" backgroundColor="#92A0AD" />
       <View style={styles.container}>
         <View>
-        
           <Text style={styles.header}>Add Task</Text>
-
         </View>
 
         <View style={styles.second}>
@@ -155,45 +150,62 @@ const AddTask = () => {
           )}
 
           <Divider height={0.5} color={"grey"} />
-
-          <View style={{ flexDirection: "row", alignItems: "center",}}>
-            
-          <View style={{ flexDirection:"row"}}>
-            <Text style={styles.input}>Select Time:</Text>
-            <TouchableOpacity
-              onPress={() => setShowStartTimePicker(true)}
-              style={styles.date}
-            >
-              <Text>{startTime.toLocaleTimeString()}</Text>
-            </TouchableOpacity>
-
-            
-            <TouchableOpacity onPress={() => setShowEndTimePicker(true)} style={styles.date}>
-              <Text>{endTime.toLocaleTimeString()}</Text>
-            </TouchableOpacity>
+          <View
+            style={{ flexDirection: "row", justifyContent: "space-between" }}
+          >
+            <View>
+              <Text style={styles.input}>Select Time:</Text>
             </View>
+            <View style={{ flexDirection: "row", justifyContent: "flex-end" }}>
+              <View
+                style={{ flexDirection: "row", alignSelf: "flex-end", gap: 25 }}
+              >
+                <TouchableOpacity
+                  onPress={() => setShowStartTimePicker(true)}
+                  style={styles.date}
+                >
+                  <Text>
+                    {startTime.toLocaleTimeString([], {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </Text>
+                </TouchableOpacity>
 
-            {showStartTimePicker && (
-              <DateTimePicker
-                value={date}
-                mode="time"
-                display="spinner"
-                onChange={(event, val) => {
-                  setShowStartTimePicker(false);
-                  setStartTime(val);
-                  console.log(val.valueOf());
-                }}
-              />
-            )}
+                <TouchableOpacity
+                  onPress={() => setShowEndTimePicker(true)}
+                  style={styles.date}
+                >
+                  <Text>
+                    {endTime.toLocaleTimeString([], {
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    })}
+                  </Text>
+                </TouchableOpacity>
+              </View>
 
-
-            
+              {showStartTimePicker && (
+                <DateTimePicker
+                  value={date}
+                  mode="time"
+                  is24Hour={false}
+                  display="spinner"
+                  onChange={(event, val) => {
+                    setShowStartTimePicker(false);
+                    setStartTime(val);
+                    console.log(val.valueOf());
+                  }}
+                />
+              )}
+            </View>
           </View>
 
           {showEndTimePicker && (
             <DateTimePicker
               value={date}
               mode="time"
+              is24Hour={false}
               display="spinner"
               onChange={(event, val) => {
                 setShowEndTimePicker(false);
@@ -226,29 +238,46 @@ const AddTask = () => {
           </View>
         </View>
 
-        <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+        <View
+          style={{ flexDirection: "row", gap: 30, justifyContent: "flex-end" }}
+        >
           <TouchableOpacity
             onPress={() => {
-              router.push("calendar");
+              navigation.goBack(WeekView);
             }}
-            style={{ backgroundColor: "#EEEEEE", padding: 8, borderRadius: 5 }}
+            style={{
+              backgroundColor: "#C8D5E1",
+              padding: 8,
+              borderRadius: 5,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
           >
-            <Text style={{ fontWeight: "bold" }}>Close</Text>
+            <Text style={{ fontWeight: "bold" }}>Cancel</Text>
           </TouchableOpacity>
-
-          <TouchableOpacity
-            onPress={hadleRespone}
-            style={{ backgroundColor: "#EEEEEE", padding: 8, borderRadius: 5 }}
-          >
-            <Text style={{ fontWeight: "bold" }}>Add Event</Text>
-          </TouchableOpacity>
+          {loading ? (
+            <ActivityIndicator color="black" size={"small"} />
+          ) : (
+            <TouchableOpacity
+              onPress={hadleRespone}
+              style={{
+                backgroundColor: "#C8D5E1",
+                alignItems: "center",
+                justifyContent: "center",
+                padding: 8,
+                borderRadius: 5,
+              }}
+            >
+              <Text style={{ fontWeight: "bold" }}>Add </Text>
+            </TouchableOpacity>
+          )}
         </View>
       </View>
     </>
   );
 };
 
-export default AddTask;
+export default AddEvent;
 
 const styles = StyleSheet.create({
   lastButton: {
@@ -290,7 +319,7 @@ const styles = StyleSheet.create({
   },
   date: {
     backgroundColor: "#EEEEEE",
-    marginLeft: 25,
+    // marginLeft: 25,
     padding: 4,
     borderRadius: 3,
     alignSelf: "flex-end",

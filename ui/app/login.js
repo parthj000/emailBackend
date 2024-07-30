@@ -39,9 +39,12 @@ export default function Login() {
 
   return (
     <>
-      <Toast />
+      <View style={{ position: "relative", zIndex: 78, width: "100%" }}>
+        <Toast />
+      </View>
+
       <View style={styles.container}>
-      <StatusBar barStyle="dark-content" backgroundColor="#92A0AD" />
+        <StatusBar barStyle="dark-content" backgroundColor="#92A0AD" />
         {/* <Image source={require("../assets/in.jpg")} style={styles.image} /> */}
         <Text
           style={{
@@ -56,7 +59,7 @@ export default function Login() {
         <View style={styles.errorContainer}>
           <TextInput
             style={styles.input}
-            placeholder="Username or email"
+            placeholder="Email"
             onChangeText={(val) => {
               val ? setEmailerr(null) : setEmailerr("*required");
               setEmail(val);
@@ -105,15 +108,15 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     paddingHorizontal: 30,
-    backgroundColor:"#92A0AD",
+    backgroundColor: "#92A0AD",
     gap: 12,
   },
   input: {
     height: 40,
     borderColor: "black",
     borderWidth: 1,
-    
-    fontWeight:"bold",
+
+    fontWeight: "bold",
 
     padding: 12,
     borderRadius: 9,

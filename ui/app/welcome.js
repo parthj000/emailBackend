@@ -9,13 +9,10 @@ import {
   TouchableOpacity,
   Text,
   Image,
-  ImageBackground,
   StatusBar,
   ActivityIndicator,
-  
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Buffer } from "buffer";
 import Toast from "react-native-toast-message";
 
 export default function WelcomePage() {
@@ -28,6 +25,7 @@ export default function WelcomePage() {
   const [newGoal, setNewGoal] = useState("");
   const [success, setSuccess] = useState(false);
   const [goalLoading, setGoalLoading] = useState("");
+  // const [required, setRequired] = useState(false);
 
   const fetchGoal = async () => {
     try {
@@ -37,45 +35,30 @@ export default function WelcomePage() {
 
       if (token) {
         setToken(token);
-        console.log(token +"this token in goal context -----------------------")
-        const res = await fetch(
-          `${process.env.BACKEND_URI}/api/goals`,
-          {
-            method:"GET",
-            headers:{
-              "authorization":`Bearer ${token}` ,
-              "Content-Type":'application/json'
-            }
-          }
+        console.log(
+          token + "this token in goal context -----------------------"
         );
+        const res = await fetch(`${process.env.BACKEND_URI}/api/goals`, {
+          method: "GET",
+          headers: {
+            authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        });
         const data = await res.json();
 
         if (res.ok) {
-          if (data.goals[0]) {
-            console.log(data.goals);
-            setGoal(data.goals[0].goalText);
-            setName(data.goals[0].username);
-            setLoading(false);
-            return;
-          }
-          console.log(token);
-          const decodedData = Buffer.from(
-            token.split(".")[1],
-            "base64"
-          ).toString("utf-8");
-
-          setGoal("set your goal !");
-          setName(JSON.parse(decodedData).email);
+          data.goalText ? setGoal(data.goalText) : setGoal("set your goal");
+          setName(data.username);
           setLoading(false);
           return;
         }
-        console.log( data +"data herer ---------------------------");
+        console.log(data + "data herer ---------------------------");
         await AsyncStorage.removeItem("token");
         console.log(data);
         throw new Error("something went wrong");
       }
-      // throw new Error("user is not authorized");
-      
+      throw new Error("user is not authorized");
     } catch (error) {
       if (error.message === "Network request failed") {
         console.log(error);
@@ -96,12 +79,18 @@ export default function WelcomePage() {
 
   const handleSetGoal = async () => {
     try {
+      console.log(newGoal);
+      if (!newGoal) {
+        return null;
+      }
+
       setGoalLoading(true);
       console.log(Token);
       let res = await fetch(`${process.env.BACKEND_URI}/api/goals`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          authorization: `Bearer ${Token}`,
         },
         body: JSON.stringify({
           token: Token,
@@ -158,7 +147,7 @@ export default function WelcomePage() {
             justifyContent: "center",
           }}
         >
-          <ActivityIndicator size="large" color="blue" />
+          <ActivityIndicator size="large" color="black" />
         </View>
       ) : (
         <View style={{ backgroundColor: "#92A0AD" }}>
@@ -166,11 +155,9 @@ export default function WelcomePage() {
             <Toast />
           </View>
 
-          {/* <ImageBackground
-            style={styles.bgimage}
-            source={require("../assets/welcome-bg.png")}
-          ></ImageBackground> */}
-          <View style={{ paddingTop: 30, marginHorizontal: 80 }}>
+          <View
+            style={{ justifyContent: "flex-end", marginRight: 25, marginTop: 30 }}
+          >
             <TouchableOpacity
               style={{
                 backgroundColor: "transparent",
@@ -218,12 +205,25 @@ export default function WelcomePage() {
                 setModalVisible(true);
               }}
             >
-              <TextInput style={styles.usernameGoal} editable={false}>
+              <TextInput
+                onPress={() => {
+                  setModalVisible(true);
+                }}
+                style={styles.usernameGoal}
+                editable={false}
+              >
                 {goal}
               </TextInput>
             </TouchableOpacity>
           </View>
-          <Text style={{ textAlign: "center", fontWeight: "bold" }}>
+          <Text
+            style={{
+              textAlign: "center",
+              fontWeight: "bold",
+              // marginLeft: 40,
+              // width: "83%",
+            }}
+          >
             Goals for today
           </Text>
 
@@ -277,7 +277,6 @@ export default function WelcomePage() {
 
       <Modal
         visible={modalVisible}
-        
         onDismiss={() => {
           setSuccess(false);
           setModalVisible(false);
@@ -286,24 +285,51 @@ export default function WelcomePage() {
         contentContainerStyle={styles.modalView}
       >
         {goalLoading ? (
-          <ActivityIndicator size="large" />
+          <ActivityIndicator size="large" color={"black"} />
         ) : (
           <>
             <Text style={styles.modalText}>Set a Goal</Text>
+            <View style={{ marginBottom: 20, width: "100%" }}>
+              <TextInput
+                style={styles.input}
+                placeholder="Enter your goal"
+                value={newGoal}
+                onChangeText={setNewGoal}
+              />
+              {newGoal ? null : (
+                <Text
+                  style={{
+                    fontStyle: "italic",
+                    fontSize: 10,
+                    color: "red",
+                    paddingLeft: 10,
+                  }}
+                >
+                  *required
+                </Text>
+              )}
+            </View>
 
-            <TextInput
-              style={styles.input}
-              placeholder="Enter your goal"
-              value={newGoal}
-              onChangeText={setNewGoal}
-            />
-            <Button
+            <TouchableOpacity
+              style={{
+                backgroundColor: "#C8D5E1",
+                borderRadius: 5,
+                color: "white",
+                padding: 7,
+              }}
               onPress={() => {
                 handleSetGoal();
               }}
             >
-              Set Goal
-            </Button>
+              <Text
+                onPress={() => {
+                  handleSetGoal();
+                }}
+                style={{ color: "black", fontWeight: "bold" }}
+              >
+                Save
+              </Text>
+            </TouchableOpacity>
           </>
         )}
       </Modal>
@@ -328,7 +354,7 @@ const styles = StyleSheet.create({
 
   Welcome: {
     fontWeight: "300",
-    marginTop: "12%",
+    marginTop: "5%",
     fontSize: 40,
     color: "black",
   },
@@ -435,7 +461,7 @@ const styles = StyleSheet.create({
   },
 
   modalView: {
-    backgroundColor: "white",
+    backgroundColor: "#E1E1E1",
     padding: 20,
     margin: 45,
     width: "80%",
@@ -455,7 +481,7 @@ const styles = StyleSheet.create({
     height: 40,
     borderColor: "#CCCCCC",
     borderWidth: 1,
-    marginBottom: 20,
+
     paddingLeft: 10,
     borderRadius: 10,
   },

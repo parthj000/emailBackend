@@ -1,16 +1,148 @@
 import React, { useContext, useEffect, useState } from "react";
-import { View, StyleSheet, Dimensions, Text,ActivityIndicator } from "react-native";
+import {
+  View,
+  StyleSheet,
+  Dimensions,
+  ActivityIndicator,
+  Alert,
+  Text,
+} from "react-native";
 import { Calendar } from "react-native-big-calendar";
 import { CalendarContext } from "./CalendarContext";
 import dayjs from "dayjs";
 import {
-  PanGestureHandler,
   GestureHandlerRootView,
+  PanGestureHandler,
   State,
 } from "react-native-gesture-handler";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+
 const { width, height } = Dimensions.get("window");
 
+const MonthView = () => {
+  const {
+    view,
+    setView,
+    month,
+    setMonth,
+
+    setSelectedValue,
+  } = useContext(CalendarContext);
+  const [newEvents, setEvents] = useState([]);
+  const [previous, setPrevious] = useState({});
+  const [next, setNext] = useState({});
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    setMonth(dayjs());
+    fetchMonthEvents(setNext, setPrevious, {}, "M", setEvents, setLoading);
+  }, []);
+
+  const handleSwipe = ({ nativeEvent }) => {
+    if (nativeEvent.state === State.END) {
+      const { translationX, translationY } = nativeEvent;
+      const swipeThreshold = 50; // Adjust this value to change swipe sensitivity
+
+      // Check if the swipe is mostly horizontal
+      if (
+        Math.abs(translationX) > Math.abs(translationY) &&
+        Math.abs(translationX) > swipeThreshold
+      ) {
+        if (translationX < 0) {
+          onSwipeLeft();
+        } else {
+          onSwipeRight();
+        }
+      }
+    }
+  };
+
+  const handleCell = (date) => {
+    console.log("Cell pressed:", date);
+    setSelectedValue("day");
+    setMonth(date);
+    setView("day");
+  };
+
+  const onSwipeLeft = () => {
+    
+    
+    setMonth(dayjs(month).add(1, "month"));
+    fetchMonthEvents(setNext, setPrevious, next, "M", setEvents, setLoading);
+  };
+
+  const onSwipeRight = () => {
+    
+    setMonth(dayjs(month).subtract(1, "month"));
+    
+    fetchMonthEvents(
+      setNext,
+      setPrevious,
+      previous,
+      "M",
+      setEvents,
+      setLoading
+    );
+  };
+
+  if (view !== "month") return null;
+
+  return (
+    <>
+      {loading ? (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="black" />
+        </View>
+      ) : (
+        <GestureHandlerRootView style={styles.container}>
+          <PanGestureHandler
+            onGestureEvent={handleSwipe}
+            onHandlerStateChange={handleSwipe}
+            activeOffsetX={[-10, 10]} // Adjust horizontal swipe sensitivity
+            activeOffsetY={[-200, 200]} // Allow more vertical movement to pass through
+          >
+            <View style={styles.calendarWrapper}>
+              <Calendar
+              headerContainerStyle={{backgroundColor:"white"}}
+              
+                dayHeaderHighlightColor="red"
+                eventCellStyle={{backgroundColor:"#92A0AD"}}
+                dayHeaderStyle={{colo:"red"}}
+                
+                events={newEvents}
+                onPressCell={handleCell}
+                height={height}
+                showAdjacentMonths={false}
+                onPressEvent={(e) => {
+                  console.log(e);
+                  Alert.alert(e.title, e.des);
+                }}
+                width={width}
+                mode="month"
+                swipeEnabled={false}
+                date={month}
+              />
+            </View>
+          </PanGestureHandler>
+        </GestureHandlerRootView>
+      )}
+    </>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  calendarWrapper: {
+    flex: 1,
+  },
+  loadingContainer: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+});
 
 export const fetchMonthEvents = async (
   setNext,
@@ -21,177 +153,45 @@ export const fetchMonthEvents = async (
   setLoading
 ) => {
   try {
-    setLoading(true)
-    var request;
-
+    setLoading(true);
     const token = await AsyncStorage.getItem("token");
-
     const baseurl = `${process.env.BACKEND_URI}/api/events`;
 
+    let request = `${baseurl}?mode=${mode}`;
     if (JSON.stringify(obj) !== "{}") {
-      let start = obj.startDate;
-      let end = obj.endDate;
-      request = `${baseurl}?startDate=${start}&endDate=${end}&mode=${mode}`;
-      console.log(request)
-    } else {
-      request = `${baseurl}?mode=${mode}`;
-      
+      const { startDate, endDate } = obj;
+      request = `${baseurl}?startDate=${startDate}&endDate=${endDate}&mode=${mode}`;
     }
-    console.log(
-      request,
-      "this is the request -------------------------------------------------------------------------"
-    );
 
-    const res = await fetch(request,
-      {
-        method:"GET",
-        headers:{
-          "authorization":`Bearer ${token}` ,
-          "Content-Type":'application/json'
-        }
-      }
-      
-    );
+    const res = await fetch(request, {
+      method: "GET",
+      headers: {
+        authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    });
     const data = await res.json();
-    
 
-    setNext({
-      startDate: data.next.startDate,
-      endDate: data.next.endDate,
-    });
-    setPrevious({
-      startDate: data.prev.startDate,
-      endDate: data.prev.endDate,
-    });
+    setNext({ startDate: data.next.startDate, endDate: data.next.endDate });
+    setPrevious({ startDate: data.prev.startDate, endDate: data.prev.endDate });
     setEvents(doEventsStructuring(data.events));
-    setLoading(false)
-
-
   } catch (err) {
     console.error(err);
+  } finally {
+    setLoading(false);
   }
 };
 
 export function doEventsStructuring(events) {
-  if (!events) {
-    return [];
-  }
-  var newArr = [];
-  for (let key of events) {
-    const obj = {
-      title: key.title,
-      start: new Date(key.startDate * 1000),
-      end: new Date(key.endDate * 1000),
-    };
-    newArr.push(obj);
-  }
-  
-  return newArr;
+  if (!events) return [];
+  return events.map((key) => ({
+    title: key.title,
+    start: new Date(key.startDate * 1000),
+    end: new Date(key.endDate * 1000),
+    color: "grey",
+    
+    des:key.description
+  }));
 }
-
-const MonthView = () => {
-  const { view, setView, currentDate, setCurrentDate, month, setMonth } =
-    useContext(CalendarContext);
-  const [newEvents, setEvents] = useState([]);
-  const [previous, setPrevious] = useState({});
-  const [next, setNext] = useState({});
-  const [loading, setLoading] = useState(false);
-  
-
-  useEffect(() => {
-    setMonth(dayjs(currentDate).month());
-    fetchMonthEvents(setNext, setPrevious, {}, "M", setEvents,setLoading).then(
-      setLoading(false)
-    );
-
-
-  }, []);
-
-  const handleGesture = ({ nativeEvent }) => {
-    if (nativeEvent.state === State.END) {
-      const { translationX } = nativeEvent;
-      if (translationX < 0) {
-        onSwipeLeft();
-      } else if (translationX > 0) {
-        onSwipeRight();
-      }
-    }
-  };
-
-  if (view !== "month") return null;
-
-  const handleCell = (date) => {
-    setView("day");
-    setCurrentDate(date);
-  };
-
-  const onSwipeLeft = () => {
-    console.log("Left----------------");
-
-    setCurrentDate(dayjs(currentDate).add(1, "month").toDate());
-    fetchMonthEvents(setNext, setPrevious, next, "M", setEvents,setLoading);
-  };
-
-  const onSwipeRight = () => {
-    console.log("right----------------------------");
-    setCurrentDate(dayjs(currentDate).subtract(1, "month").toDate());
-    fetchMonthEvents(setNext, setPrevious, previous, "M", setEvents,setLoading);
-  };
-
-  return (
-    <>
-
-    {loading ? (
-      <View style={{flex:1,alignItems:"center",justifyContent:"center"}}>
-      <ActivityIndicator size="large" color="grey" />
-      </View>
-    ):<GestureHandlerRootView style={{ flex: 1 }}>
-    <View style={styles.container}>
-      
-      <Calendar
-        events={newEvents} // Add your events here
-        height={height}
-        width={width}
-        mode="month"
-        date={currentDate}
-      />
-      <View style={styles.overlayContainer}>
-        <PanGestureHandler onHandlerStateChange={handleGesture}>
-          <View style={styles.leftHalf}></View>
-        </PanGestureHandler>
-        <PanGestureHandler onHandlerStateChange={handleGesture}>
-          <View style={styles.rightHalf}></View>
-        </PanGestureHandler>
-      </View>
-    </View>
-  </GestureHandlerRootView>}
-    
-    
-    
-
-    </>
-  );
-};
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  overlayContainer: {
-    ...StyleSheet.absoluteFillObject,
-    flexDirection: "row",
-  },
-  leftHalf: {
-    width: width / 2,
-    height: "100%",
-    backgroundColor: "transparent",
-  },
-  rightHalf: {
-    width: width / 2,
-    height: "100%",
-    backgroundColor: "transparent",
-  },
-});
-
 
 export default MonthView;
