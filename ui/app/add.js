@@ -20,7 +20,7 @@ import WeekView from "../components/WeekView";
 const AddEvent = () => {
   const navigation = useNavigation();
   const data = [
-    { label: "No repeat", value: "N" },
+    { label: "No repet", value: "N" },
     { label: "Daily", value: "D" },
     { label: "Weekly", value: "W" },
     { label: "Monthly", value: "M" },

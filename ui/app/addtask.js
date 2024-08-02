@@ -11,7 +11,6 @@ import React, { useState } from "react";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import Divider from "../components/Divder";
 import { Dropdown } from "react-native-element-dropdown";
-import { SafeAreaView } from "react-native-safe-area-context";
 import Toast from "react-native-toast-message";
 import { router } from "expo-router";
 import { useNavigation } from "@react-navigation/native";

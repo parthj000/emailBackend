@@ -1,0 +1,7 @@
+POST https://d1c1-2405-201-5c0e-88c3-b1aa-1356-a31-2084.ngrok-free.app//api/login
+Content-Type: application/json
+
+{
+    "email":"test@test.com",
+    "password":"qwER1234!"
+}

@@ -1,67 +1,74 @@
 import { StyleSheet, Text, View ,TouchableOpacity} from "react-native";
-import React, { useCallback } from "react";
+import React, { useEffect, useState } from "react";
 import Header from "./TopHeader";
-import Divder from "../components/Divder";
-import { isLoaded, useFonts } from "expo-font";
+import ActivitiesModal from "../components/ActivitiesModal";
 
 
 
 const Activities = () => {
+  const [modalVisible,setModalVisible] = useState(false);
+  const [activities,setActivities] = useState([]);
+  const [activity,setActivity] = useState({});
+  
+  useEffect(()=>{
+    getActivities(setActivities)
+  },[]);
 
 
   
   
-  const activityList = [
-    { title: "Sleep" },
-    { title: "Meditation" },
-    { title: "Positive Affirmation" },
-    { title: "Exercise" },
-    { title: "Study" },
-    
-  ];
+
 
   return (
     <>
       <View style={styles.container}>
-
-      <Header   />
-
-
-
-      
-        <View style={styles.content}>
+        <Header />
+        <ActivitiesModal
+          setModalVisible={setModalVisible}
+          modalVisible={modalVisible}
+          activity={activity}
+          setActivities={setActivity}
+         
           
-        <Text style={styles.Header}>Activity Log</Text>
+        />
 
+        <View style={styles.content}>
+          <Text style={styles.Header}>Activity Log</Text>
 
           <View>
+            {activities && activities.map((item, index) => (
 
-
-            {activityList.map((item, index) => (
+              
               <View key={index}>
+                <TouchableOpacity
+                  onPress={() => {
+                    console.log(item);
+                    setModalVisible(true);
+                    setActivity(item);
+                    
 
-                <TouchableOpacity 
-                style={styles.activityList}
-                ><Text style={styles.title}>{item.title}
-                 </Text>
+                  }}
+                  style={styles.activityList}
+                >
+                  <Text style={styles.title}>{item.display_name}</Text>
                 </TouchableOpacity>
-
               </View>
+                
             ))}
           </View>
-
-
         </View>
-
       </View>
-
-
-
     </>
   );
 };
 
+
 export default Activities;
+
+
+
+
+
 
 const styles = StyleSheet.create({
 
@@ -105,3 +112,32 @@ const styles = StyleSheet.create({
     
   }
 });
+
+
+
+// functions
+
+const getActivities = async (setActivities) => {
+  console.log("sdkm");
+  const token = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjgzYWNlM2U0Yzg0ZGIyOTQxMmNhYjUiLCJlbWFpbCI6InRlc3RAdGVzdC5jb20iLCJ1c2VybmFtZSI6InRlc3QiLCJpYXQiOjE3MjI1OTQ1MzMsImV4cCI6MTczODE0NjUzM30.jmb6EjYhE2WjkGLqYinFfOabc7rUjE5MpS9L9vJ2scI`;
+
+  // const token = await AsyncStorage.getItem("token");
+  const res = await fetch(
+    "https://d1c1-2405-201-5c0e-88c3-b1aa-1356-a31-2084.ngrok-free.app/api/activities",
+    {
+      method: "GET",
+      headers: {
+        authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    }
+  );
+
+  const data = await res.json();
+  console.log(data);
+  setActivities(data.activities);
+};
+
+
+
+
