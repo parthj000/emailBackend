@@ -8,32 +8,24 @@ export default async (req, res) => {
     return res.status(405).json({ message: 'Method not allowed' });
   }
 
-  const { username, email, password } = req.body;
-
-  let identifier;
-
-  if (username) {
-    identifier = username;
-  } else if (email) {
-    identifier = email;
-  } else {
-    return res.status(400).json({ message: 'Username or email and password are required' });
+  const { email, password } = req.body;
+  var identifier;
+  if(isValidEmail(email)){
+    identifier="email"
+  }
+  else{
+    identifier="username"
   }
 
-  if (!identifier ||!password) {
-    return res.status(400).json({ message: 'Username or email and password are required' });
-  }
+
 
   try {
     const client = await clientPromise;
     const db = client.db('');    //handler tries to find a user document with given email
     let user;
 
-    if (email) { // assume it's an email
-      user = await db.collection('users').findOne({ email: email });
-    } else { // assume it's a username
-      user = await db.collection('users').findOne({ username: username });
-    }
+    user = await db.collection("users").findOne({ [identifier]: email });
+    console.log(identifier);
 
     if (!user) {
       return res.status(401).json({ message: 'Invalid username or email' });
@@ -57,3 +49,10 @@ export default async (req, res) => {
     res.status(500).json({ message: 'Internal server error' });
   }
 };
+
+
+
+function isValidEmail(email) {
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
+}
