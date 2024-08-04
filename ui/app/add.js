@@ -208,7 +208,6 @@ const AddEvent = () => {
               mode="time"
               display="spinner"
               onChange={(event, val) => {
-               
                 setShowEndTimePicker(false);
                 setEndTime(val);
                 console.log(val.valueOf());
