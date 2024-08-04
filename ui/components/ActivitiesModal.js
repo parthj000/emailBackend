@@ -334,7 +334,7 @@ const TextComp = () => {
 async function postactivites(dataSend, setLoading) {
   try {
     setLoading(true);
-    const res = await fetch(`${process.env.BACKEND_URI}/api/activities`, {
+    const res = await fetch(`${process.env.BACKEND_URI}/api/activities/activity_log`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
