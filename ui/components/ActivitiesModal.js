@@ -21,7 +21,9 @@ const ActivitiesModal = (props) => {
   const { modalVisible, setModalVisible, activity, setActivity } = props;
 
   const [activities, setActivities] = useState([]);
-  const [dataSend, setDataSend] = useState({});
+  const [dataSend, setDataSend] = useState({
+    date: new Date(),
+  });
   const [loading, setLoading] = useState(false);
 
   return (
@@ -56,7 +58,15 @@ const ActivitiesModal = (props) => {
             }}
           >
             {loading ? (
-              <ActivityIndicator size="large" color={"black"} />
+              <View
+                style={{
+                  flex: 1,
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <ActivityIndicator size="large" color={"black"} />
+              </View>
             ) : (
               <>
                 <Text
@@ -92,16 +102,15 @@ const ActivitiesModal = (props) => {
                     />
                   ) : null}
 
-                  {activity.slug === "PA" ? <TextComp /> : null}
-
-                  {/* components */}
-                  {activity.slug !== "PA" ? (
-                    <TimeComp
-                      dropdownData={activity.subtypes}
-                      dataSend={dataSend}
-                      setDataSend={setDataSend}
-                    />
+                  {activity.slug === "PA" ? (
+                    <TextComp setDataSend={setDataSend} dataSend={dataSend} />
                   ) : null}
+
+                  <TimeComp
+                    dropdownData={activity.subtypes}
+                    dataSend={dataSend}
+                    setDataSend={setDataSend}
+                  />
                 </View>
 
                 {/* buttons */}
@@ -110,7 +119,9 @@ const ActivitiesModal = (props) => {
                     style={styles.button}
                     onPress={() => {
                       setModalVisible(false);
-                      setDataSend(null);
+                      setDataSend({
+                        date: new Date(),
+                      });
                     }}
                   >
                     <Text>cancel</Text>
@@ -120,9 +131,16 @@ const ActivitiesModal = (props) => {
                     style={styles.button}
                     onPress={() => {
                       console.log(dataSend, "this is the data need to be send");
-                      postactivites(dataSend, setLoading);
+                      postactivites(
+                        dataSend,
+                        setLoading,
+                        activity.id,
+                        setModalVisible
+                      );
 
-                      setDataSend(null);
+                      setDataSend({
+                        date: new Date(),
+                      });
                     }}
                   >
                     <Text>Save</Text>
@@ -219,7 +237,7 @@ const DropDownComponent = (props) => {
             setSelectedValue(item.value);
             setDataSend({
               ...dataSend,
-              routineType: item.id,
+              activity_sub_type_id: item.id,
             });
             console.log(item, "this is cool"); // Consider removing this in production
           }}
@@ -308,7 +326,7 @@ const SelectDate = (props) => {
 
             console.log("sdjnsjd");
             if (event.type === "set") {
-              setDataSend({ ...dataSend, start: val });
+              setDataSend({ ...dataSend, date: val });
             }
           }}
         />
@@ -317,48 +335,67 @@ const SelectDate = (props) => {
   );
 };
 
-const TextComp = () => {
-  const [text, setText] = useState("");
+const TextComp = (props) => {
+  const { setDataSend, dataSend } = props;
+
   return (
     <>
       <TextInput
         placeholder="Add title"
-        style={styles.title}
-        value={text}
-        onChangeText={setText}
+        style={{ paddingVertical: 7 }}
+        // value={text}
+        onChangeText={(text) => {
+          setDataSend({
+            ...dataSend,
+            text: text,
+          });
+        }}
       />
+      <Divder height={0.75} color={"grey"} />
     </>
   );
 };
 
-async function postactivites(dataSend, setLoading) {
+async function postactivites(dataSend, setLoading, id, setModalVisible) {
+  console.log(dataSend);
   try {
+    const obj = {
+      ...dataSend,
+      activity_type_id: id,
+    };
+    const token = await AsyncStorage.getItem("token");
     setLoading(true);
-    const res = await fetch(`${process.env.BACKEND_URI}/api/activities/activity_log`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: await AsyncStorage.getItem("token"),
-      },
+    const res = await fetch(
+      `${process.env.BACKEND_URI}/api/activities/activity_log`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: `Bearer ${token}`,
+        },
 
-      body: JSON.stringify({
-        dataSend,
-      }),
-    });
+        body: JSON.stringify(obj),
+      }
+    );
+
+    console.log(obj);
     const data = await res.json();
     console.log(data);
     if (res.ok) {
       Toast.show({
         type: "success",
-        text1: data.message,
+        text1: "Activity set successfully",
       });
+      setLoading(false);
+      setModalVisible(false);
       return;
     } else {
       Toast.show({
-        type: "success",
+        type: "error",
         text1: data.message,
       });
       setLoading(false);
+      setModalVisible(false);
       return;
     }
   } catch (error) {
@@ -367,6 +404,7 @@ async function postactivites(dataSend, setLoading) {
       text1: error.message,
     });
     setLoading(false);
+    setModalVisible(false);
     console.log(error);
   }
 }
