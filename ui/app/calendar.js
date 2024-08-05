@@ -2,8 +2,7 @@ import React from "react";
 import { View, StyleSheet } from "react-native";
 import { CalendarProvider } from "../components/CalendarContext";
 import Header from "../components/Header";
-import Footer from "../components/Footer";
-import EventModal from "../components/EventModal";
+
 import DayView from "../components/DayView";
 import WeekView from "../components/WeekView";
 import MonthView from "../components/MonthView";
