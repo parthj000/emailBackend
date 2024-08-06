@@ -4,8 +4,8 @@ POST http://localhost:3000/api/login
 Content-Type: application/json
 
 {
-    "email":"nitishsir",
-    "password":"wow "
+    "email":"nice",
+    "password":"qwER123!"
 }
 
 ###
@@ -13,9 +13,9 @@ POST http://localhost:3000/api/signup
 Content-Type: application/json
 
 {
-    "email":"parsjoshi2@gmail.com",
-    "password":"nitishsir",
-    "username":"nitishsir"
+    "email":"jparth582@gmail.com",
+    "password":"nice",
+    "username":"nice"
 }
 
 
@@ -23,11 +23,11 @@ Content-Type: application/json
 
 POST http://localhost:3000/api/confirm-password
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmIxZDhhYmNiZDliYTNjYWMyZmYyNDkiLCJlbWFpbCI6InBhcnNqb3NoaTJAZ21haWwuY29tIiwidXNlcm5hbWUiOiJuaXRpc2hzaXIiLCJpYXQiOjE3MjI5MzE2ODMsImV4cCI6MTczODQ4MzY4M30.5jpn7kS4bD_XtlYcZ-VUg_3tU1ffNHiaSryjylXzsUE
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmIyMmVhYjI5OGRmMzQ1NThiNTU0MDAiLCJlbWFpbCI6ImpwYXJ0aDU4MkBnbWFpbC5jb20iLCJ1c2VybmFtZSI6Im5pY2UiLCJpYXQiOjE3MjI5NTM1ODcsImV4cCI6MTczODUwNTU4N30.Pu7g9r1-ZOloxi3GnFbXFpxFKrnHGb82GZZCaVLftm0
 
 {
     
-    "password":"wow ",
+    "password":"nice",
     "username":"jparthkdsjskdjsdjk"
 }
 
