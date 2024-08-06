@@ -22,9 +22,9 @@ POST http://localhost:3000/api/signup
 Content-Type: application/json
 
 {
-    "email":"parsoshi2@gmail.com",
+    "email":"ns1820637@gmail.com",
     "password":"kpa123",
-    "username":"jparthkdsjskdjsdjk"
+    "username":"nitishsir"
 }
 
 ###
@@ -32,8 +32,8 @@ POST http://localhost:3000/api/login
 Content-Type: application/json
 
 {
-    "email":"jparthkdsjskdjsk",
-    "password":"0FFqju"
+    "email":"nitishsir",
+    "password":"h3QBp0"
 }
 
 ###
@@ -42,9 +42,25 @@ Content-Type: application/json
 
 {
     "email":"parsjoshi2@gmail.com",
-    "password":"kpa",
+    "password":"nitishsir",
+    "username":"nitishsir"
+}
+
+
+###
+
+POST http://localhost:3000/api/confirm-password
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmIxYzJhMWNiZDliYTNjYWMyZmYyNDciLCJlbWFpbCI6InBhcnNqb3NoaTJAZ21haWwuY29tIiwidXNlcm5hbWUiOiJuaXRpc2hzaXIiLCJpYXQiOjE3MjI5MjU3NTAsImV4cCI6MTczODQ3Nzc1MH0.kSwYw87QkL9Keu4CN5S81A9_wCR_sDzp80YR3HjgSuo
+
+{
+    
+    "password":"wow ",
     "username":"jparthkdsjskdjsdjk"
 }
+
+
+
 
 
 
