@@ -14,6 +14,8 @@ import {
 } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Toast from "react-native-toast-message";
+import SignUpPage from "./signup";
+import ConfirmPassword from "../components/ConfirmPassword";
 
 export default function WelcomePage() {
   const route = useRouter();
@@ -25,12 +27,10 @@ export default function WelcomePage() {
   const [newGoal, setNewGoal] = useState("");
   const [success, setSuccess] = useState(false);
   const [goalLoading, setGoalLoading] = useState("");
-  // const [required, setRequired] = useState(false);
+  const [confirm, setConfirm] = useState(null);
 
   const fetchGoal = async () => {
     try {
-      setLoading(true);
-
       const token = await AsyncStorage.getItem("token");
 
       if (token) {
@@ -50,7 +50,6 @@ export default function WelcomePage() {
         if (res.ok) {
           data.goalText ? setGoal(data.goalText) : setGoal("set your goal");
           setName(data.username);
-          setLoading(false);
           return;
         }
         console.log(data + "data herer ---------------------------");
@@ -63,7 +62,6 @@ export default function WelcomePage() {
       if (error.message === "Network request failed") {
         console.log(error);
         setGoal("!Network error!");
-        setLoading(false);
         return;
       }
       console.log(error);
@@ -130,13 +128,89 @@ export default function WelcomePage() {
     }
   };
 
+  const getConfirmStatus = async () => {
+    console.log("loaded first");
+    try {
+      const confirmStore = await AsyncStorage.getItem("confirm");
+      if (!confirmStore) {
+        const token = await AsyncStorage.getItem("token");
+
+        const res = await fetch(
+          `${process.env.BACKEND_URI}/api/confirm-password`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        // if (!res.ok) {
+        //   throw new Error(`HTTP error! Status: ${res.status}`);
+        // }
+
+        
+        const data = await res.json();
+
+        console.log(data.confirm, "this is just before setting data");
+        await AsyncStorage.setItem("confirm", data.confirm);
+        setConfirm(data.confirm);
+        console.log("[[[[[[[[[[[[[[[[[[[[[[[[=======================");
+        return;
+
+        
+      }
+
+      
+
+      setConfirm(confirmStore);
+
+      return;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const finale = async () => {
+    try {
+      await getConfirmStatus();
+      await fetchGoal();
+      setLoading(false);
+    } catch (err) {
+      console.log(err);
+      setLoading(false);
+      Toast.show({
+        type: "error",
+        text1: "Something really went wrong !",
+      });
+    }
+  };
+
   useEffect(() => {
-    fetchGoal(setLoading);
+    setLoading(true);
+    finale();
   }, []);
+
+  
+
+  if( confirm && confirm!=="true"){
+
+    return (
+      <>
+      <ConfirmPassword setLoading={setLoading} />
+
+      </>
+    )
+
+  }
 
   return (
     <>
       <StatusBar barStyle="dark-content" backgroundColor="#92A0AD" />
+      <View style={{ position: "relative", zIndex: 78, width: "100%" }}>
+        <Toast />
+      </View>
       {loading ? (
         <View
           style={{
@@ -151,12 +225,12 @@ export default function WelcomePage() {
         </View>
       ) : (
         <View style={{ backgroundColor: "#92A0AD" }}>
-          <View style={{ position: "relative", zIndex: 78, width: "100%" }}>
-            <Toast />
-          </View>
-
           <View
-            style={{ justifyContent: "flex-end", marginRight: 25, marginTop: 30 }}
+            style={{
+              justifyContent: "flex-end",
+              marginRight: 25,
+              marginTop: 30,
+            }}
           >
             <TouchableOpacity
               style={{
@@ -175,10 +249,13 @@ export default function WelcomePage() {
                   console.log("pressed");
                   setLoading(true);
                   console.log(loading);
-                  await AsyncStorage.removeItem("token").then(() => {
-                    setLoading(false);
-                    router.push("/login");
-                  });
+
+                  await AsyncStorage.multiRemove(["token", "confirm"]).then(
+                    () => {
+                      setLoading(false);
+                      router.push("/login");
+                    }
+                  );
 
                   return;
                 } catch (err) {
