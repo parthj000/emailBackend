@@ -22,7 +22,7 @@ POST http://localhost:3000/api/signup
 Content-Type: application/json
 
 {
-    "email":"parsjoshi2@gmail.com",
+    "email":"parsoshi2@gmail.com",
     "password":"kpa123",
     "username":"jparthkdsjskdjsdjk"
 }
@@ -32,8 +32,8 @@ POST http://localhost:3000/api/login
 Content-Type: application/json
 
 {
-    "email":"jparthkdsjskdjsdjk",
-    "password":"MTEr22"
+    "email":"jparthkdsjskdjsk",
+    "password":"0FFqju"
 }
 
 ###
@@ -47,13 +47,5 @@ Content-Type: application/json
 }
 
 
-###
-POST http://localhost:3000/api/forgot
-Content-Type: application/json
 
-{
-    "email":"parsjoshi2@gmail.com",
-    
-    "tempPassword":"kapacnjdncdjnc"
-}
 

@@ -42,12 +42,13 @@ export default async (req, res) => {
         email,
         password: hashedPassword,
         confirm: false,
-        tempPassword: password,
-        expires: parseInt(new Date().valueOf()) + 5 * 60 * 1000,
+        force:true
+        
+        
       };
 
       await db.collection("users").insertOne(newUser);
-      await sendMail(newUser);
+      await sendMail({...newUser,tempPassword: password});
 
       res.status(201).json({ message: "User created successfully" });
     }
@@ -58,9 +59,9 @@ export default async (req, res) => {
               .collection("users")
               .updateOne(
                 { email: isEmail.email },
-                { $set: { password: hashedPassword, tempPassword: password } }
+                { $set: { password: hashedPassword } }
               );
-            await sendMail(isEmail);
+            await sendMail({...isEmail,tempPassword: password });
             return await res.status(200).json({message:"Verification Email has been sent to you"});
       }
       return res.status(401).json({message:"Email already exsit"});
@@ -71,9 +72,9 @@ export default async (req, res) => {
           .collection("users")
           .updateOne(
             { username: isUsername.username },
-            { $set: { password: hashedPassword,tempPassword:password } }
+            { $set: { password: hashedPassword } }
           );
-        await sendMail(isUsername);
+        await sendMail({...isUsername,tempPassword:password });
         return await  res
           .status(200)
           .json({ message: "Verification Email has been sent to you" });
