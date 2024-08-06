@@ -79,6 +79,7 @@ export default async (req, res) => {
       let obj = {
         username,
         email,
+        confirm:decoded.confirm,
         goalText: goals ? goals.goalText : null,
       };
 

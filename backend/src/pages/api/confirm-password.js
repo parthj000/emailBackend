@@ -25,7 +25,7 @@ export default async (req,res)=>{
         .collection("users")
         .updateOne(
           { email: decoded.email },
-          { $set: { password: hashedPassword } }
+          { $set: { password: hashedPassword, confirm:true, force:false } }
         );
     
         return res.status(200).json({message:'Password has been set succesfully!'});
