@@ -1,4 +1,3 @@
-
 import nodemailer from "nodemailer";
 
 const transporter = nodemailer.createTransport({
@@ -12,11 +11,10 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-
 const sendMail = async (params) => {
   try {
-    const {email,username,tempPassword} = params;
-    console.log(params)
+    const { email, username, tempPassword } = params;
+    console.log(params);
     const mailOptions = {
       from: {
         name: "BrainFlow",
@@ -24,13 +22,12 @@ const sendMail = async (params) => {
       },
       to: email,
       subject: "Temporary password for verification",
-      text:"hii",
+      text: "hii",
       html: `
       <h1>Hey ${username}!</h1>
       <br><br>
       <b>your temporary password for verification is <span style='font-size:5rem; align-text:'center''>${tempPassword}</span>
-      
-      <p>Donot reply to this message</p>`
+      <p>Donot reply to this message</p>`,
     };
 
     await transporter.sendMail(mailOptions);
@@ -39,7 +36,5 @@ const sendMail = async (params) => {
     console.error(error);
   }
 };
-
-
 
 export { sendMail };

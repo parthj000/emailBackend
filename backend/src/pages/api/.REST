@@ -5,7 +5,7 @@ Content-Type: application/json
 
 {
     "email":"nitishsir",
-    "password":"h3QBp0"
+    "password":"wow "
 }
 
 ###
@@ -23,7 +23,7 @@ Content-Type: application/json
 
 POST http://localhost:3000/api/confirm-password
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmIxYzJhMWNiZDliYTNjYWMyZmYyNDciLCJlbWFpbCI6InBhcnNqb3NoaTJAZ21haWwuY29tIiwidXNlcm5hbWUiOiJuaXRpc2hzaXIiLCJpYXQiOjE3MjI5MjU3NTAsImV4cCI6MTczODQ3Nzc1MH0.kSwYw87QkL9Keu4CN5S81A9_wCR_sDzp80YR3HjgSuo
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmIxZDhhYmNiZDliYTNjYWMyZmYyNDkiLCJlbWFpbCI6InBhcnNqb3NoaTJAZ21haWwuY29tIiwidXNlcm5hbWUiOiJuaXRpc2hzaXIiLCJpYXQiOjE3MjI5MzE2ODMsImV4cCI6MTczODQ4MzY4M30.5jpn7kS4bD_XtlYcZ-VUg_3tU1ffNHiaSryjylXzsUE
 
 {
     
@@ -34,7 +34,15 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmIxY
 ###
 GET http://localhost:3000/api/goals
 Content-Type: application/json
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmIxYzJhMWNiZDliYTNjYWMyZmYyNDciLCJlbWFpbCI6InBhcnNqb3NoaTJAZ21haWwuY29tIiwidXNlcm5hbWUiOiJuaXRpc2hzaXIiLCJpYXQiOjE3MjI5MjU3NTAsImV4cCI6MTczODQ3Nzc1MH0.kSwYw87QkL9Keu4CN5S81A9_wCR_sDzp80YR3HjgSuo
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmIxZDhhYmNiZDliYTNjYWMyZmYyNDkiLCJlbWFpbCI6InBhcnNqb3NoaTJAZ21haWwuY29tIiwidXNlcm5hbWUiOiJuaXRpc2hzaXIiLCJpYXQiOjE3MjI5MzcxNTYsImV4cCI6MTczODQ4OTE1Nn0.weLj4FUo73HG4UZQVa7f8tu8jI6YpBDkaJl6oRoLxew
+
+###
+GET http://localhost:3000/api/confirm-password
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NmIxZDhhYmNiZDliYTNjYWMyZmYyNDkiLCJlbWFpbCI6InBhcnNqb3NoaTJAZ21haWwuY29tIiwidXNlcm5hbWUiOiJuaXRpc2hzaXIiLCJpYXQiOjE3MjI5MzcxNTYsImV4cCI6MTczODQ4OTE1Nn0.weLj4FUo73HG4UZQVa7f8tu8jI6YpBDkaJl6oRoLxew
+
+
+
 
 
 
