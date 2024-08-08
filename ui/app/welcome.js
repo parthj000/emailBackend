@@ -1,6 +1,7 @@
 import { Link, router, useRouter, useRouteParams } from "expo-router";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useState ,useCallback} from "react";
 import { Modal, Button } from "react-native-paper";
+
 
 import {
   View,
@@ -16,6 +17,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import Toast from "react-native-toast-message";
 import SignUpPage from "./signup";
 import ConfirmPassword from "../components/ConfirmPassword";
+import { useFonts } from "expo-font";
+
 
 export default function WelcomePage() {
   const route = useRouter();
@@ -28,6 +31,27 @@ export default function WelcomePage() {
   const [success, setSuccess] = useState(false);
   const [goalLoading, setGoalLoading] = useState("");
   const [confirm, setConfirm] = useState(null);
+
+
+  const [isLoaded] = useFonts({
+    'chunk':require('../assets/fonts/ChunkFive-Regular.otf'),
+    'paly':require('../assets/fonts/PlaywriteAR-VariableFont_wght.ttf'),
+    'glass':require('../assets/fonts/GlacialIndifference-Regular.otf'),
+    
+
+  });
+
+ 
+
+  const handleLayout =useCallback(async () => {
+    if(isLoaded){
+      setLoading(false)
+    }
+  },[isLoaded]);
+
+ 
+
+
 
   const fetchGoal = async () => {
     try {
@@ -267,7 +291,7 @@ export default function WelcomePage() {
                 }
               }}
             >
-              <Text>Logout</Text>
+              <Text style={styles.containText}>Logout</Text>
             </TouchableOpacity>
           </View>
 
@@ -296,9 +320,9 @@ export default function WelcomePage() {
           <Text
             style={{
               textAlign: "center",
-              fontWeight: "bold",
-              // marginLeft: 40,
-              // width: "83%",
+              
+              fontFamily:"glass"
+              
             }}
           >
             Goals for today
@@ -313,7 +337,7 @@ export default function WelcomePage() {
                 style={{ height: "80%", width: "100%" }}
                 source={require("../assets/clock.png")}
               ></Image>
-              <Text>Activity</Text>
+              <Text style={styles.containText}>Activity</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -324,7 +348,7 @@ export default function WelcomePage() {
                 style={{ height: "80%", width: "100%" }}
                 source={require("../assets/calendar.png")}
               ></Image>
-              <Text>Calendar</Text>
+              <Text style={styles.containText}>Calendar</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -335,7 +359,7 @@ export default function WelcomePage() {
                 style={{ height: "80%", width: "100%" }}
                 source={require("../assets/books.png")}
               ></Image>
-              <Text>Resources</Text>
+              <Text style={styles.containText}>Resources</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -346,7 +370,7 @@ export default function WelcomePage() {
                 style={{ height: "80%", width: "100%" }}
                 source={require("../assets/bars.png")}
               ></Image>
-              <Text>Progress</Text>
+              <Text style={styles.containText}>Progress</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -430,15 +454,17 @@ const styles = StyleSheet.create({
   },
 
   Welcome: {
-    fontWeight: "300",
+    
     marginTop: "5%",
     fontSize: 40,
     color: "black",
+    fontFamily:"glass"
   },
   username: {
     color: "black",
     fontSize: 27,
-    fontWeight: "800",
+    textTransform:"capitalize",
+    fontFamily:"chunk"
   },
 
   usernameGoal: {
@@ -453,6 +479,7 @@ const styles = StyleSheet.create({
     padding: 5,
     borderRadius: 25,
     elevation: 8,
+    fontFamily:"glass"
   },
 
   Goal: {
@@ -463,6 +490,7 @@ const styles = StyleSheet.create({
     height: 35,
     padding: 5,
     borderRadius: 25,
+    fontFamily:"glass"
   },
 
   second: {
@@ -473,6 +501,7 @@ const styles = StyleSheet.create({
     gap: 15,
     paddingLeft: 40,
     paddingBottom: "100%",
+    
   },
 
   Actvitiy: {
@@ -488,6 +517,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     alignItems: "center",
     justifyContent: "center",
+    
   },
 
   Calender: {
@@ -561,5 +591,9 @@ const styles = StyleSheet.create({
 
     paddingLeft: 10,
     borderRadius: 10,
+
   },
+  containText:{
+    fontFamily:"glass"
+  }
 });

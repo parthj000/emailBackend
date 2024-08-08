@@ -39,12 +39,13 @@ export default function Login() {
 
   return (
     <>
+      <StatusBar barStyle="dark-content" backgroundColor="#92A0AD" />
+
       <View style={{ position: "relative", zIndex: 78, width: "100%" }}>
         <Toast />
       </View>
 
       <View style={styles.container}>
-        <StatusBar barStyle="dark-content" backgroundColor="#92A0AD" />
         {/* <Image source={require("../assets/in.jpg")} style={styles.image} /> */}
         <Text
           style={{
