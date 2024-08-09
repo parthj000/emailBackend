@@ -5,7 +5,7 @@ export async function middleware(req, res) {
   const { pathname } = req.nextUrl;
 
   // Bypass middleware for login and signup endpoints
-  if ( pathname.startsWith('/api/login') || pathname.startsWith('/api/signup') || pathname.startsWith('/api/forgot')) {
+  if ( pathname.startsWith('/api/login') || pathname.startsWith('/api/signup')) {
     return NextResponse.next();
   }
   const authHeader = req.headers.get('authorization');
