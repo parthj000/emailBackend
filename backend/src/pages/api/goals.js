@@ -29,7 +29,7 @@ export default async (req, res) => {
 
       const currentTimestamp = Math.floor(Date.now() / 1000);
       // console.log(currentTimestamp);
-      const past24Hours = currentTimestamp - 24 * 60 * 60;
+      const past24Hours = currentTimestamp - 0.1 * 60 * 60;
       // console.log(past24Hours);
 
       // Check if there is an existing goal within the past 24 hours
